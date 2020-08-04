@@ -49,7 +49,7 @@ public class GenericControllerTests extends GenericTests {
         return objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), dtoClass);
     }
 
-    public void getAllTest(String restPath, String classPath, String attributeNamePlural, Attribute[] attributes, Attribute[] hiddenAttributes, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public void getAllTest(String restPath, String classPath, String attributeNamePlural, Attribute[] attributes, Attribute[] hiddenAttributes, Link[] expectedLinks, Link[] hiddenLinks, Link collectionSelfLink) throws Exception {
         // Save Object List
         CrudRepository<Object, UUID> repository = oir.getRepository(classPath);
         List<Object> objectList = objectBuilder.buildObjectList(classPath, attributes, GET_ALL_TEST_COUNT);
@@ -69,7 +69,6 @@ public class GenericControllerTests extends GenericTests {
             objectValidator.validateResultActionLinks(Collections.singletonList(objectList.get(i)), resultActions, expectedLinks, hiddenLinks, "._embedded." + attributeNamePlural + "[" + i + "]");
         }
 
-        Link collectionSelfLink = new Link("self", attributeNamePlural);
         objectValidator.validateResultActionLinks(new ArrayList<>(){}, resultActions, new Link[]{collectionSelfLink}, new Link[]{}, "");
     }
 
