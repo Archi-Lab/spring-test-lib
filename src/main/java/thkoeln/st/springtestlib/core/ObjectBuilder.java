@@ -1,5 +1,7 @@
 package thkoeln.st.springtestlib.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -8,12 +10,41 @@ import java.util.List;
 
 public class ObjectBuilder {
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * deprecated
+     * @param classPath
+     * @param attributes
+     * @return
+     * @throws Exception
+     */
     public Object buildObject(String classPath, Attribute[] attributes) throws Exception {
         Class clazz = Class.forName(classPath);
         Object object = clazz.getConstructor().newInstance();
 
         setObjectFieldValues(object, attributes);
         return object;
+    }
+
+    public Object buildObject(ObjectDescription objectDescription) throws Exception {
+        Class clazz = Class.forName(objectDescription.getClassPath());
+        Object object = clazz.getConstructor().newInstance();
+
+        if (objectDescription.getAttributes() == null) {
+            setObjectFieldValues(object, objectDescription.getSerializedJson());
+        } else {
+            setObjectFieldValues(object, objectDescription.getAttributes());
+        }
+        return object;
+    }
+
+    public void setObjectFieldValues(Object object, String serializedJson) throws Exception {
+        Object newValuesObject = objectMapper.readValue(serializedJson, object.getClass());
+
+        for (Field field : object.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            field.set(object, field.get(newValuesObject));
+        }
     }
 
     public void setObjectFieldValues(Object object, Attribute[] attributes) throws Exception {
@@ -77,10 +108,27 @@ public class ObjectBuilder {
         return null;
     }
 
+    /**
+     * deprecated
+     * @param classPath
+     * @param attributes
+     * @param count
+     * @return
+     * @throws Exception
+     */
     public List<Object> buildObjectList(String classPath, Attribute[] attributes, int count) throws Exception {
         List<Object> objects = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             Object object = buildObject(classPath, attributes);
+            objects.add(object);
+        }
+        return objects;
+    }
+
+    public List<Object> buildObjectList(ObjectDescription objectDescription, int count) throws Exception {
+        List<Object> objects = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            Object object = buildObject(objectDescription);
             objects.add(object);
         }
         return objects;

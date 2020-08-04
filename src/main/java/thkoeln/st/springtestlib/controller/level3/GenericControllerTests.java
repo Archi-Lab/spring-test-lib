@@ -9,6 +9,7 @@ import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
 import thkoeln.st.springtestlib.core.Link;
+import thkoeln.st.springtestlib.core.ObjectDescription;
 
 import java.util.*;
 
@@ -31,99 +32,100 @@ public class GenericControllerTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-    public Object getTest(Object expectedObject, String restPath, String classPath, String dtoClassPath, Attribute[] attributes, Attribute[] hiddenAttributes, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public Object getTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         if (expectedObject == null) {
-            CrudRepository<Object, UUID> repository = oir.getRepository(classPath);
-            expectedObject = objectBuilder.buildObject(classPath, attributes);
+            CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
+            expectedObject = objectBuilder.buildObject(objectDescription);
             repository.save(expectedObject);
         }
 
         ResultActions resultActions = mockMvc
-                .perform(get(restPath + "/" + oir.getId(expectedObject)).contentType(MediaType.APPLICATION_JSON))
+                .perform(get(objectDescription.getRestPath() + "/" + oir.getId(expectedObject)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        objectValidator.validateResultActions(expectedObject, resultActions, attributes, hiddenAttributes, "");
+        objectValidator.validateResultActions(expectedObject, resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "");
         objectValidator.validateResultActionLinks(Collections.singletonList(expectedObject), resultActions, expectedLinks, hiddenLinks, "");
 
-        Class<?> dtoClass = Class.forName(dtoClassPath);
+        Class<?> dtoClass = Class.forName(objectDescription.getDtoClassPath());
         return objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), dtoClass);
     }
 
-    public void getAllTest(String restPath, String classPath, String attributeNamePlural, Attribute[] attributes, Attribute[] hiddenAttributes, Link[] expectedLinks, Link[] hiddenLinks, Link collectionSelfLink) throws Exception {
+    public void getAllTest(ObjectDescription objectDescription, String attributeNamePlural, Link[] expectedLinks, Link[] hiddenLinks, Link collectionSelfLink) throws Exception {
         // Save Object List
-        CrudRepository<Object, UUID> repository = oir.getRepository(classPath);
-        List<Object> objectList = objectBuilder.buildObjectList(classPath, attributes, GET_ALL_TEST_COUNT);
+        CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
+        List<Object> objectList = objectBuilder.buildObjectList(objectDescription, GET_ALL_TEST_COUNT);
         for (Object object : objectList) {
             repository.save(object);
         }
 
         // Perform getAll
         ResultActions resultActions = mockMvc
-                .perform(get(restPath).contentType(MediaType.APPLICATION_JSON))
+                .perform(get(objectDescription.getRestPath()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         // Test Fields
         for (int i = 0; i < GET_ALL_TEST_COUNT; i++) {
             String preIdentifier = "._embedded." + attributeNamePlural + "[" + i + "]";
-            objectValidator.validateResultActions(objectList.get(i), resultActions, attributes, hiddenAttributes, preIdentifier);
+            objectValidator.validateResultActions(objectList.get(i), resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), preIdentifier);
             objectValidator.validateResultActionLinks(Collections.singletonList(objectList.get(i)), resultActions, expectedLinks, hiddenLinks, "._embedded." + attributeNamePlural + "[" + i + "]");
         }
 
         objectValidator.validateResultActionLinks(new ArrayList<>(){}, resultActions, new Link[]{collectionSelfLink}, new Link[]{}, "");
     }
 
-    public Object postTest(String restPath, String classPath, Attribute[] attributes, Attribute[] hiddenAttributes, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
-        Attribute[] diffAttributes = getAttributeDiff(attributes, hiddenAttributes);
+    public Object postTest(ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+        Attribute[] diffAttributes = getAttributeDiff(objectDescription.getAttributes(), objectDescription.getHiddenAttributes());
+        objectDescription.setAttributes(diffAttributes);
 
-        Object expectedObject = objectBuilder.buildObject(classPath, diffAttributes);
+        Object expectedObject = objectBuilder.buildObject(objectDescription);
 
         // Perform Post
         ResultActions resultActions = mockMvc
                 .perform(
-                        post(restPath)
+                        post(objectDescription.getRestPath())
                                 .content(objectMapper.writeValueAsString(expectedObject))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        objectValidator.validateResultActions(expectedObject, resultActions, attributes, hiddenAttributes, "");
+        objectValidator.validateResultActions(expectedObject, resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "");
         objectValidator.validateResultActionLinks(new ArrayList<>(){}, resultActions, expectedLinks, hiddenLinks, "");
 
-        Object retrievedObject = oir.getRepository(classPath).findAll().iterator().next();
-        objectValidator.validateTwoObjects(expectedObject, retrievedObject, attributes);
+        Object retrievedObject = oir.getRepository(objectDescription.getClassPath()).findAll().iterator().next();
+        objectValidator.validateTwoObjects(expectedObject, retrievedObject, objectDescription.getAttributes());
         return retrievedObject;
     }
 
-    public void putTest(Object expectedObject, String restPath, String classPath, Attribute[] attributes, Attribute[] newAttributes, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public void putTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         if (expectedObject == null) {
-            CrudRepository<Object, UUID> repository = oir.getRepository(classPath);
-            expectedObject = objectBuilder.buildObject(classPath, attributes);
+            CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
+            expectedObject = objectBuilder.buildObject(objectDescription);
             repository.save(expectedObject);
         }
 
-        objectBuilder.setObjectFieldValues(expectedObject, newAttributes);
+        objectBuilder.setObjectFieldValues(expectedObject, objectDescription.getUpdatedAttributes());
 
         ResultActions resultActions = mockMvc
                 .perform(
-                        put(restPath + "/" + oir.getId(expectedObject))
+                        put(objectDescription.getRestPath() + "/" + oir.getId(expectedObject))
                                 .content(objectMapper.writeValueAsString(expectedObject))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         objectValidator.validateResultActionLinks(Collections.singletonList(expectedObject), resultActions, expectedLinks, hiddenLinks, "");
 
-        Object retrievedObject = oir.getRepository(classPath).findAll().iterator().next();
-        objectValidator.validateTwoObjects(expectedObject, retrievedObject, attributes);
+        Object retrievedObject = oir.getRepository(objectDescription.getClassPath()).findAll().iterator().next();
+        objectValidator.validateTwoObjects(expectedObject, retrievedObject, objectDescription.getAttributes());
     }
 
-    public void deleteTest(String restPath, String classPath, Attribute[] attributes) throws Exception {
+    public void deleteTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
-        CrudRepository<Object, UUID> repository = oir.getRepository(classPath);
-        Object object = objectBuilder.buildObject(classPath, attributes);
+        CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
+        Object object = objectBuilder.buildObject(objectDescription);
         repository.save(object);
 
         // Perform delete
         mockMvc
-                .perform(delete(restPath + "/" + oir.getId(object)))
+                .perform(delete(objectDescription.getRestPath() + "/" + oir.getId(object)))
                 .andExpect(status().isNoContent());
 
         Optional<Object> objectOp = repository.findById(oir.getId(object));
