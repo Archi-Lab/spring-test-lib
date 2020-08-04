@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.testing;
+package thkoeln.st.springtestlib.core;
 
 import com.jayway.jsonpath.JsonPath;
 import org.springframework.data.repository.CrudRepository;

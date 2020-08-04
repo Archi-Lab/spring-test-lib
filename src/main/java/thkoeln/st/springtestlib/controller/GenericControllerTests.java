@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.testing.controller;
+package thkoeln.st.springtestlib.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.repository.CrudRepository;
@@ -6,9 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
-import thkoeln.st.springtestlib.testing.Attribute;
-import thkoeln.st.springtestlib.testing.GenericTests;
-import thkoeln.st.springtestlib.testing.Link;
+import thkoeln.st.springtestlib.core.Attribute;
+import thkoeln.st.springtestlib.core.GenericTests;
+import thkoeln.st.springtestlib.core.Link;
 
 import java.util.*;
 

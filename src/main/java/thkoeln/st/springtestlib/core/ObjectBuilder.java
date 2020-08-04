@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.testing;
+package thkoeln.st.springtestlib.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.testing;
+package thkoeln.st.springtestlib.core;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.testing;
+package thkoeln.st.springtestlib.core;
 
 public class Attribute {
 

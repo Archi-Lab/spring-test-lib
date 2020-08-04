@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.testing;
+package thkoeln.st.springtestlib.core;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.support.Repositories;
