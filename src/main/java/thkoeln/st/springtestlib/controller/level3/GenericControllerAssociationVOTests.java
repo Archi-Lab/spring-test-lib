@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.controller;
+package thkoeln.st.springtestlib.controller.level3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.repository.CrudRepository;
