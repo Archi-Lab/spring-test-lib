@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
+import thkoeln.st.springtestlib.core.ObjectDescription;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,102 +35,102 @@ public class GenericControllerTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-    public void getTest(String restPath, String classPath, Attribute[] attributes, Attribute[] hiddenAttributes) throws Exception {
+    public void getTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
-        CrudRepository repository = oir.getRepository(classPath);
-        Object object = objectBuilder.buildObject(classPath, attributes);
+        CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
+        Object object = objectBuilder.buildObject(objectDescription);
         repository.save(object);
 
         // Perform get
         ResultActions resultActions = mockMvc
-                .perform(get(restPath + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON))
+                .perform(get(objectDescription.getRestPath() + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        objectValidator.validateResultActions(object, resultActions, attributes, hiddenAttributes, "");
+        objectValidator.validateResultActions(object, resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "");
     }
 
-    public void getAllTest(String restPath, String classPath, Attribute[] attributes, Attribute[] hiddenAttributes) throws Exception {
+    public void getAllTest(ObjectDescription objectDescription) throws Exception {
         // Save Object List
-        CrudRepository repository = oir.getRepository(classPath);
-        List<Object> objectList = objectBuilder.buildObjectList(classPath, attributes, GET_ALL_TEST_COUNT);
+        CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
+        List<Object> objectList = objectBuilder.buildObjectList(objectDescription, GET_ALL_TEST_COUNT);
         for (Object object : objectList) {
             repository.save(object);
         }
 
         // Perform getAll
         ResultActions resultActions = mockMvc
-                .perform(get(restPath).contentType(MediaType.APPLICATION_JSON))
+                .perform(get(objectDescription.getRestPath()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         // Test Fields
         for (int i = 0; i < GET_ALL_TEST_COUNT; i++) {
-            objectValidator.validateResultActions(objectList.get(i), resultActions, attributes, hiddenAttributes, "[" + i + "]");
+            objectValidator.validateResultActions(objectList.get(i), resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "[" + i + "]");
         }
     }
 
-    public void postTest(String restPath, String classPath, Attribute[] attributes, Attribute[] hiddenAttributes) throws Exception {
+    public void postTest(ObjectDescription objectDescription) throws Exception {
         // Create Object
-        Object object = objectBuilder.buildObject(classPath, attributes);
+        Object object = objectBuilder.buildObject(objectDescription);
 
         // Perform Post
         ResultActions resultActions = mockMvc
                 .perform(
-                        post(restPath)
+                        post(objectDescription.getRestPath())
                                 .content(objectMapper.writeValueAsString(object))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        objectValidator.validateResultActions(object, resultActions, attributes, hiddenAttributes, "");
+        objectValidator.validateResultActions(object, resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "");
 
-        Object retrievedObject = oir.getRepository(classPath).findAll().iterator().next();
-        objectValidator.validateTwoObjects(object, retrievedObject, attributes);
+        Object retrievedObject = oir.getRepository(objectDescription.getClassPath()).findAll().iterator().next();
+        objectValidator.validateTwoObjects(object, retrievedObject, objectDescription.getAttributes());
     }
 
-    public void putTest(String restPath, String classPath, Attribute[] attributes, Attribute[] newAttributes) throws Exception {
+    public void putTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
-        CrudRepository repository = oir.getRepository(classPath);
-        Object object = objectBuilder.buildObject(classPath, attributes);
+        CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
+        Object object = objectBuilder.buildObject(objectDescription);
         repository.save(object);
 
         // Change object
-        objectBuilder.setObjectFieldValues(object, newAttributes);
+        objectBuilder.setObjectFieldValues(object, objectDescription.getUpdatedAttributes());
 
         // Perform put
         mockMvc
                 .perform(
-                        put(restPath + "/" + oir.getId(object))
+                        put(objectDescription.getRestPath() + "/" + oir.getId(object))
                                 .content(objectMapper.writeValueAsString(object))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        Object retrievedObject = oir.getRepository(classPath).findAll().iterator().next();
-        objectValidator.validateTwoObjects(object, retrievedObject, attributes);
+        Object retrievedObject = oir.getRepository(objectDescription.getClassPath()).findAll().iterator().next();
+        objectValidator.validateTwoObjects(object, retrievedObject, objectDescription.getAttributes());
     }
 
-    public void deleteTest(String restPath, String classPath, Attribute[] attributes) throws Exception {
+    public void deleteTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
-        CrudRepository repository = oir.getRepository(classPath);
-        Object object = objectBuilder.buildObject(classPath, attributes);
+        CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
+        Object object = objectBuilder.buildObject(objectDescription);
         repository.save(object);
 
         // Perform delete
         mockMvc
-                .perform(delete(restPath + "/" + oir.getId(object)))
+                .perform(delete(objectDescription.getRestPath() + "/" + oir.getId(object)))
                 .andExpect(status().isNoContent());
 
         Optional<Object> objectOp = repository.findById(oir.getId(object));
         assertFalse(objectOp.isPresent());
     }
 
-    public void noRestLevel3Test(String restPath, String classPath, Attribute[] attributes) throws Exception {
+    public void noRestLevel3Test(ObjectDescription objectDescription) throws Exception {
         // Save Object
-        CrudRepository repository = oir.getRepository(classPath);
-        Object object = objectBuilder.buildObject(classPath, attributes);
+        CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
+        Object object = objectBuilder.buildObject(objectDescription);
         repository.save(object);
 
         // Perform get
         MockHttpServletResponse getResponse = mockMvc
-                .perform(get(restPath + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+                .perform(get(objectDescription.getRestPath() + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
         assertTrue(
                 getResponse.getStatus() == HttpStatus.NOT_FOUND.value()
@@ -137,7 +138,7 @@ public class GenericControllerTests extends GenericTests {
 
         // Perform getAll
         MockHttpServletResponse getAllResponse = mockMvc
-                .perform(get(restPath).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+                .perform(get(objectDescription.getRestPath()).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
         assertTrue(
                 getAllResponse.getStatus() == HttpStatus.NOT_FOUND.value()
