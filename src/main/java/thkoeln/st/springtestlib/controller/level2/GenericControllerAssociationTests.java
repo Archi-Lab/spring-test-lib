@@ -32,7 +32,6 @@ public class GenericControllerAssociationTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-
     public void putOneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         // Save Parent
         CrudRepository parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -117,20 +116,6 @@ public class GenericControllerAssociationTests extends GenericTests {
         putObjects(parentObjectDescription.getRestPath(), parentObject, childObjects, childAttributeName);
 
         objectValidator.assertToManyRelation(parentRepository, parentObject, childObjects, childGetterName, true);
-    }
-
-    public void putOneToManyVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
-        // Save Parent
-        CrudRepository parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
-        Object parentObject = objectBuilder.buildObject(parentObjectDescription);
-        parentRepository.save(parentObject);
-
-        // Create Childs
-        List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
-
-        putObjects(parentObjectDescription.getRestPath(), parentObject, childObjects, childAttributeName);
-
-        objectValidator.assertToManyRelation(parentRepository, parentObject, childObjects, childGetterName, false);
     }
 
     public void getAllOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childSetterName) throws Exception {
