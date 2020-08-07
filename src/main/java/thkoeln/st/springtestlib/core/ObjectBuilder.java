@@ -1,6 +1,7 @@
 package thkoeln.st.springtestlib.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

@@ -9,7 +9,8 @@ import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
 import thkoeln.st.springtestlib.core.Link;
-import thkoeln.st.springtestlib.core.ObjectDescription;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
+import thkoeln.st.springtestlib.core.objectdescription.RESTObjectDescription;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-    public Object putOneToOneVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public Object putOneToOneVOTest(Object parentObject, RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         if (parentObject == null) {
@@ -55,7 +56,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         return childObject;
     }
 
-    public Object postOneToManyVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public Object postOneToManyVOTest(Object parentObject, RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         if (parentObject == null) {
@@ -77,7 +78,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         return childObject;
     }
 
-    public void deleteOneToManyVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public void deleteOneToManyVOTest(Object parentObject, RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         if (parentObject == null) {

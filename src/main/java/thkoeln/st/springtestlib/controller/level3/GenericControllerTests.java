@@ -9,7 +9,8 @@ import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
 import thkoeln.st.springtestlib.core.Link;
-import thkoeln.st.springtestlib.core.ObjectDescription;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
+import thkoeln.st.springtestlib.core.objectdescription.RESTObjectDescription;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ public class GenericControllerTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-    public Object getTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public Object getTest(Object expectedObject, RESTObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         if (expectedObject == null) {
             CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
             expectedObject = objectBuilder.buildObject(objectDescription);
@@ -50,7 +51,7 @@ public class GenericControllerTests extends GenericTests {
         return objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), dtoClass);
     }
 
-    public void getAllTest(ObjectDescription objectDescription, String attributeNamePlural, Link[] expectedLinks, Link[] hiddenLinks, Link collectionSelfLink) throws Exception {
+    public void getAllTest(RESTObjectDescription objectDescription, String attributeNamePlural, Link[] expectedLinks, Link[] hiddenLinks, Link collectionSelfLink) throws Exception {
         // Save Object List
         CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
         List<Object> objectList = objectBuilder.buildObjectList(objectDescription, GET_ALL_TEST_COUNT);
@@ -73,7 +74,7 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateResultActionLinks(new ArrayList<>(){}, resultActions, new Link[]{collectionSelfLink}, new Link[]{}, "");
     }
 
-    public Object postTest(ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public Object postTest(RESTObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         Attribute[] diffAttributes = getAttributeDiff(objectDescription.getAttributes(), objectDescription.getHiddenAttributes());
         objectDescription.setAttributes(diffAttributes);
 
@@ -95,7 +96,7 @@ public class GenericControllerTests extends GenericTests {
         return retrievedObject;
     }
 
-    public void putTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public void putTest(Object expectedObject, RESTObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         if (expectedObject == null) {
             CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
             expectedObject = objectBuilder.buildObject(objectDescription);
@@ -117,7 +118,7 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateTwoObjects(expectedObject, retrievedObject, objectDescription.getAttributes());
     }
 
-    public void deleteTest(ObjectDescription objectDescription) throws Exception {
+    public void deleteTest(RESTObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
         Object object = objectBuilder.buildObject(objectDescription);

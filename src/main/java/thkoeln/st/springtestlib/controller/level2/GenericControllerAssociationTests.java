@@ -6,9 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
-import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
-import thkoeln.st.springtestlib.core.ObjectDescription;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
+import thkoeln.st.springtestlib.core.objectdescription.RESTObjectDescription;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class GenericControllerAssociationTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-    public void putOneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
+    public void putOneToOneTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         // Save Parent
         CrudRepository parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
@@ -53,7 +53,7 @@ public class GenericControllerAssociationTests extends GenericTests {
         objectValidator.assertToOneRelation(parentRepository, parentObject, childObject, childGetterName, true);
     }
 
-    public void getOneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childSetterName) throws Exception {
+    public void getOneToOneTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childSetterName) throws Exception {
         // Save Child
         CrudRepository childRepository = oir.getRepository(childObjectDescription.getClassPath());
         Object childObject = objectBuilder.buildObject(childObjectDescription);
@@ -73,7 +73,7 @@ public class GenericControllerAssociationTests extends GenericTests {
                 .andExpect(jsonPath("$.id").value(oir.getId(childObject).toString()));
     }
 
-    public void deleteOneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childSetterName, String childGetterName) throws Exception {
+    public void deleteOneToOneTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childSetterName, String childGetterName) throws Exception {
         // Save Child
         CrudRepository childRepository = oir.getRepository(childObjectDescription.getClassPath());
         Object childObject = objectBuilder.buildObject(childObjectDescription);
@@ -94,7 +94,7 @@ public class GenericControllerAssociationTests extends GenericTests {
         objectValidator.assertToOneRelation(parentRepository, parentObject, null, childGetterName, true);
     }
 
-    public void putOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
+    public void putOneToManyTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         // Save Parent
         CrudRepository parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
@@ -118,7 +118,7 @@ public class GenericControllerAssociationTests extends GenericTests {
         objectValidator.assertToManyRelation(parentRepository, parentObject, childObjects, childGetterName, true);
     }
 
-    public void getAllOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childSetterName) throws Exception {
+    public void getAllOneToManyTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childSetterName) throws Exception {
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
 
@@ -135,7 +135,7 @@ public class GenericControllerAssociationTests extends GenericTests {
         }
     }
 
-    public void getOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childSetterName) throws Exception {
+    public void getOneToManyTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childSetterName) throws Exception {
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
 
@@ -152,7 +152,7 @@ public class GenericControllerAssociationTests extends GenericTests {
                 .andExpect(jsonPath("$.id").value(expectedId));
     }
 
-    public void deleteOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childSetterName, String childGetterName) throws Exception {
+    public void deleteOneToManyTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childSetterName, String childGetterName) throws Exception {
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
 

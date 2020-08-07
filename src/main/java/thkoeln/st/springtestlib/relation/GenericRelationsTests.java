@@ -1,9 +1,8 @@
 package thkoeln.st.springtestlib.relation;
 
 import org.springframework.web.context.WebApplicationContext;
-import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
-import thkoeln.st.springtestlib.core.ObjectDescription;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

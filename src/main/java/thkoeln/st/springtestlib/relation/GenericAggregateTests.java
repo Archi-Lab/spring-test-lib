@@ -3,6 +3,7 @@ package thkoeln.st.springtestlib.relation;
 import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,26 +34,26 @@ public class GenericAggregateTests extends GenericTests {
         assertTrue(noRepoForReferencedEntity);
     }
 
-    public void referencedObjectAsCopyOrNoSetterTest(String parentClassPath, Attribute[] parentAttributes, String childClassPath, Attribute[] childAttributes, String childAttributeName, String childGetterName) throws Exception {
+    public void referencedObjectAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         assertTrue(
-            referencedObjectAsCopyTest(parentClassPath, parentAttributes, childClassPath, childAttributes, childAttributeName, childGetterName) ||
-                    noSetterInVOTest(childClassPath, childAttributes)
+            referencedObjectAsCopyTest(parentObjectDescription, childObjectDescription, childAttributeName, childGetterName) ||
+                    noSetterInVOTest(childObjectDescription.getClassPath(), childObjectDescription.getAttributes())
         );
     }
 
-    public void referencedObjectCollectionAsCopyOrNoSetterTest(String parentClassPath, Attribute[] parentAttributes, String childClassPath, Attribute[] childAttributes, String childAttributeName, String childGetterName) throws Exception {
+    public void referencedObjectCollectionAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         assertTrue(
-            referencedObjectCollectionAsCopyTest(parentClassPath, parentAttributes, childClassPath, childAttributes, childAttributeName, childGetterName) ||
-                    noSetterInVOTest(childClassPath, childAttributes)
+            referencedObjectCollectionAsCopyTest(parentObjectDescription, childObjectDescription, childAttributeName, childGetterName) ||
+                    noSetterInVOTest(childObjectDescription.getClassPath(), childObjectDescription.getAttributes())
         );
     }
 
-    private boolean referencedObjectAsCopyTest(String parentClassPath, Attribute[] parentAttributes, String childClassPath, Attribute[] childAttributes, String childAttributeName, String childGetterName) throws Exception {
+    private boolean referencedObjectAsCopyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         // Create Child
-        Object childObject = objectBuilder.buildObject(childClassPath, childAttributes);
+        Object childObject = objectBuilder.buildObject(childObjectDescription);
 
         // Create Parent
-        Object parentObject = objectBuilder.buildObject(parentClassPath, parentAttributes);
+        Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         Field childField = parentObject.getClass().getDeclaredField(childAttributeName);
         childField.setAccessible(true);
         childField.set(parentObject, childObject);
@@ -64,12 +65,12 @@ public class GenericAggregateTests extends GenericTests {
         return childObject != retrievedChildObject;
     }
 
-    private boolean referencedObjectCollectionAsCopyTest(String parentClassPath, Attribute[] parentAttributes, String childClassPath, Attribute[] childAttributes, String childAttributeName, String childGetterName) throws Exception {
+    private boolean referencedObjectCollectionAsCopyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         // Create Childs
-        List<Object> childObjects = objectBuilder.buildObjectList(childClassPath, childAttributes, COLLECTION_OBJECT_COUNT);
+        List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_OBJECT_COUNT);
 
         // Create Parent
-        Object parentObject = objectBuilder.buildObject(parentClassPath, parentAttributes);
+        Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         Field childField = parentObject.getClass().getDeclaredField(childAttributeName);
         childField.setAccessible(true);
         childField.set(parentObject, childObjects);

@@ -3,6 +3,7 @@ package thkoeln.st.springtestlib.validation;
 import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -23,8 +24,8 @@ public class GenericValidationTests extends GenericTests {
         validator = factory.getValidator();
     }
 
-    public void checkValidation(String classPath, Attribute[] attributes, int expectedViolations) throws Exception {
-        Object object = objectBuilder.buildObject(classPath, attributes);
+    public void checkValidation(ObjectDescription objectDescription, int expectedViolations) throws Exception {
+        Object object = objectBuilder.buildObject(objectDescription);
 
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(object);
 
