@@ -89,7 +89,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
                 .perform(put(restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
                         .content(objectMapper.writeValueAsString(childObject))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     private ResultActions postChildToCollection(String restPath, Object parentObject, Object childObject, String childAttributeName) throws Exception {
