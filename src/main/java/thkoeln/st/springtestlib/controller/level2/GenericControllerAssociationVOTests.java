@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class GenericControllerAssociationVOTests extends GenericTests {
@@ -34,6 +35,24 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
+    public void getOneToOneVOTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName) throws Exception {
+        // Create Parent
+        CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
+        Object parentObject = objectBuilder.buildObject(parentObjectDescription);
+
+        // Create Child
+        Object childObject = objectBuilder.buildObject(childObjectDescription);
+        Field childField = parentObject.getClass().getDeclaredField(childAttributeName);
+        childField.setAccessible(true);
+        childField.set(parentObject, childObject);
+        parentRepository.save(parentObject);
+
+        mockMvc
+            .perform(get(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
+            .andExpect(jsonPath(childAttributeName).exists())
+            .andExpect(status().isOk());
+    }
+
     public Object putOneToOneVOTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -46,6 +65,24 @@ public class GenericControllerAssociationVOTests extends GenericTests {
 
         objectValidator.assertToOneRelation(parentRepository, parentObject, childObject, childGetterName, false);
         return childObject;
+    }
+
+    public void getOneToManyVOTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName) throws Exception {
+        // Create Parent
+        CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
+        Object parentObject = objectBuilder.buildObject(parentObjectDescription);
+
+        // Create Children
+        List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
+        Field childField = parentObject.getClass().getDeclaredField(childAttributeName);
+        childField.setAccessible(true);
+        childField.set(parentObject, childObjects);
+        parentRepository.save(parentObject);
+
+        mockMvc
+                .perform(get(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
+                .andExpect(jsonPath(childAttributeName).exists())
+                .andExpect(status().isOk());
     }
 
     public Object postOneToManyVOTest(RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {

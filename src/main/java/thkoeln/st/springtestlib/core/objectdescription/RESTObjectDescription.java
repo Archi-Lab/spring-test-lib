@@ -26,6 +26,14 @@ public class RESTObjectDescription extends ObjectDescription {
         this.restPath = restPath;
     }
 
+    public RESTObjectDescription(String classPath, Attribute[] attributes) {
+        super(classPath, attributes);
+    }
+
+    public RESTObjectDescription(String classPath, String serializedJson) {
+        super(classPath, serializedJson);
+    }
+
     public String getDtoClassPath() {
         return dtoClassPath;
     }
