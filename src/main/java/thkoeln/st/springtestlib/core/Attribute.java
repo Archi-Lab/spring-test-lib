@@ -2,34 +2,39 @@ package thkoeln.st.springtestlib.core;
 
 public class Attribute {
 
-    private final String name;
-    private final String type;
-    private final String serializedValue;
-    private final Object value;
+    private String name;
+    private String type;
+    private String serializedValue;
+    private Object value;
 
+
+    public Attribute() {}
 
     public Attribute(String name, String type, String serializedValue) {
         this.name = name;
         this.type = type;
         this.serializedValue = serializedValue;
-        this.value = buildAttribute();
+        buildAttribute();
     }
 
-    private Object buildAttribute() {
+    public void buildAttribute() {
         if (serializedValue.equals("null")) {
-            return null;
+            value = null;
         }
 
         switch (type) {
             case "Integer":
-                return Integer.parseInt(serializedValue);
+                value = Integer.parseInt(serializedValue);
+                break;
             case "Float":
-                return Float.parseFloat(serializedValue);
+                value = Float.parseFloat(serializedValue);
+                break;
             case "String":
-                return serializedValue;
+                value = serializedValue;
+                break;
+            default:
+                throw new IllegalArgumentException("Attribute " + name + " has incorrect type " + type);
         }
-
-        throw new IllegalArgumentException("Attribute " + name + " has incorrect type " + type);
     }
 
     public String getName() {

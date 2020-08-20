@@ -28,6 +28,29 @@ public class ObjectDescription {
 
     public ObjectDescription() {}
 
+    public void init() {
+        if (attributes != null) {
+            for (Attribute attribute : attributes) {
+                attribute.buildAttribute();
+            }
+        }
+        if (invalidAttributes != null) {
+            for (Attribute attribute : invalidAttributes) {
+                attribute.buildAttribute();
+            }
+        }
+        if (updatedAttributes != null) {
+            for (Attribute attribute : updatedAttributes) {
+                attribute.buildAttribute();
+            }
+        }
+        if (hiddenAttributes != null) {
+            for (Attribute attribute : hiddenAttributes) {
+                attribute.buildAttribute();
+            }
+        }
+    }
+
     public String getClassPath() {
         return classPath;
     }
