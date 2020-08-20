@@ -5,32 +5,28 @@ import thkoeln.st.springtestlib.core.Attribute;
 import java.util.ArrayList;
 
 public class ObjectDescription {
-    protected final String classPath;
+    private String className;
+    private String classPath;
+    private String dtoClassPath;
+    private String restPath;
 
-    protected Attribute[] attributes;
-    protected Attribute[] updatedAttributes;
-    protected Attribute[] hiddenAttributes;
-    protected String serializedJson;
+    private String getToOne;
+    private String getToMany;
+    private String setToOne;
+    private String setToMany;
+
+    private String attributeSingular;
+    private String attributePlural;
+
+    private Attribute[] attributes;
+    private Attribute[] invalidAttributes;
+    private Attribute[] updatedAttributes;
+    private Attribute[] hiddenAttributes;
+
+    private String serializedJson;
 
 
-    public ObjectDescription(String classPath, Attribute[] attributes, Attribute[] hiddenAttributes, Attribute[] updatedAttributes) {
-        this.classPath = classPath;
-        this.attributes = attributes;
-        this.updatedAttributes = updatedAttributes;
-        this.hiddenAttributes = hiddenAttributes;
-    }
-
-    public ObjectDescription(String classPath, Attribute[] attributes) {
-        this.classPath = classPath;
-        this.attributes = attributes;
-        this.hiddenAttributes = new Attribute[]{};
-        this.updatedAttributes = new Attribute[]{};
-    }
-
-    public ObjectDescription(String classPath, String serializedJson) {
-        this.classPath = classPath;
-        this.serializedJson = serializedJson;
-    }
+    public ObjectDescription() {}
 
     public String getClassPath() {
         return classPath;
@@ -48,23 +44,47 @@ public class ObjectDescription {
         return hiddenAttributes;
     }
 
+    public String getClassName() {
+        return className;
+    }
+
+    public String getDtoClassPath() {
+        return dtoClassPath;
+    }
+
+    public String getRestPath() {
+        return restPath;
+    }
+
+    public String getGetToOne() {
+        return getToOne;
+    }
+
+    public String getGetToMany() {
+        return getToMany;
+    }
+
+    public String getSetToOne() {
+        return setToOne;
+    }
+
+    public String getSetToMany() {
+        return setToMany;
+    }
+
+    public String getAttributeSingular() {
+        return attributeSingular;
+    }
+
+    public String getAttributePlural() {
+        return attributePlural;
+    }
+
+    public Attribute[] getInvalidAttributes() {
+        return invalidAttributes;
+    }
+
     public String getSerializedJson() {
         return serializedJson;
-    }
-
-    public void setAttributes(Attribute[] attributes) {
-        this.attributes = attributes;
-    }
-
-    public void setUpdatedAttributes(Attribute[] updatedAttributes) {
-        this.updatedAttributes = updatedAttributes;
-    }
-
-    public void setHiddenAttributes(Attribute[] hiddenAttributes) {
-        this.hiddenAttributes = hiddenAttributes;
-    }
-
-    public void setSerializedJson(String serializedJson) {
-        this.serializedJson = serializedJson;
     }
 }

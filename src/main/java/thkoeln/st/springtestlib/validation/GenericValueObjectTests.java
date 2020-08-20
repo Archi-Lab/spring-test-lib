@@ -1,13 +1,15 @@
 package thkoeln.st.springtestlib.validation;
 
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
+
 import java.lang.annotation.Annotation;
 
 public class GenericValueObjectTests {
 
-    public void correctValueObjectTest(String valueObjectClassName) throws Exception {
+    public void correctValueObjectTest(ObjectDescription valueObjectDescription) throws Exception {
         try {
             // Retrieve Classes
-            Class valueObjectClass = Class.forName(valueObjectClassName);
+            Class valueObjectClass = Class.forName(valueObjectDescription.getClassPath());
 
             // Test Embeddable on Value Object
             Annotation[] valueObjectAnnotations = valueObjectClass.getAnnotations();

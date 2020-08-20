@@ -1,16 +1,19 @@
 package thkoeln.st.springtestlib.validation;
 
+import thkoeln.st.springtestlib.core.Attribute;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
+
 import java.lang.reflect.Field;
 
 public class GenericWrapperClassTests {
 
-    public void onlyWrapperClassTest(String className, String[] fieldNames) throws Exception {
+    public void onlyWrapperClassTest(ObjectDescription objectDescription) throws Exception {
         boolean containsPrimitives = false;
 
-        Class objectClass = Class.forName(className);
+        Class objectClass = Class.forName(objectDescription.getClassPath());
 
-        for (int i = 0; i < fieldNames.length; i++) {
-            Field field = objectClass.getDeclaredField(fieldNames[i]);
+        for (Attribute attribute : objectDescription.getAttributes()) {
+            Field field = objectClass.getDeclaredField(attribute.getName());
             if (field.getType().isPrimitive()) {
                 containsPrimitives = true;
             }

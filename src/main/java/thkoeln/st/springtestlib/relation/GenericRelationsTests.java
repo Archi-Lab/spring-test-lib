@@ -21,14 +21,14 @@ public class GenericRelationsTests extends GenericTests {
     }
 
     // Generic Test Methods
-    public void oneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childSetterName, String childGetterName) throws Exception {
+    public void oneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent & Child object
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         Object childObject = objectBuilder.buildObject(childObjectDescription);
 
         // Retrieve Methods
-        Method setRelationMethod = parentObject.getClass().getMethod(childSetterName, childObject.getClass());
-        Method getRelationMethod = parentObject.getClass().getMethod(childGetterName);
+        Method setRelationMethod = parentObject.getClass().getMethod(childObjectDescription.getSetToOne(), childObject.getClass());
+        Method getRelationMethod = parentObject.getClass().getMethod(childObjectDescription.getGetToOne());
 
         // Save parent with child as attribute and child to repository
         setRelationMethod.invoke(parentObject, childObject);
@@ -41,13 +41,13 @@ public class GenericRelationsTests extends GenericTests {
         assertEquals(childObject, retrievedChildObject);
     }
 
-    public void oneToOneVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName) throws Exception {
+    public void oneToOneVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent & Child object
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         Object childObject = objectBuilder.buildObject(childObjectDescription);
 
         // Retrieve Field
-        Field field = parentObject.getClass().getDeclaredField(childAttributeName);
+        Field field = parentObject.getClass().getDeclaredField(childObjectDescription.getAttributeSingular());
 
         // Save parent with child as attribute and child to repository
         field.setAccessible(true);
@@ -60,13 +60,13 @@ public class GenericRelationsTests extends GenericTests {
         assertEquals(childObject, retrievedChildObject);
     }
 
-    public void oneToManyVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName) throws Exception {
+    public void oneToManyVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent & Child object
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, LIST_COUNT);
 
         // Retrieve Field
-        Field field = parentObject.getClass().getDeclaredField(childAttributeName);
+        Field field = parentObject.getClass().getDeclaredField(childObjectDescription.getAttributePlural());
 
         // Save parent with child as attribute and child to repository
         field.setAccessible(true);
@@ -82,15 +82,15 @@ public class GenericRelationsTests extends GenericTests {
         }
     }
 
-    public void manyToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childSetterName, String childGetterName) throws Exception {
-        oneToOneTest(parentObjectDescription, childObjectDescription, childSetterName, childGetterName);
+    public void manyToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
+        oneToOneTest(parentObjectDescription, childObjectDescription);
     }
 
-    public void oneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childSetterName, String childGetterName) throws Exception {
+    public void oneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Retrieve Classes and Methods
         Class parentClass = Class.forName(parentObjectDescription.getClassPath());
-        Method setRelationMethod = parentClass.getMethod(childSetterName, List.class);
-        Method getRelationMethod = parentClass.getMethod(childGetterName);
+        Method setRelationMethod = parentClass.getMethod(childObjectDescription.getSetToMany(), List.class);
+        Method getRelationMethod = parentClass.getMethod(childObjectDescription.getGetToMany());
 
         // Create Objects
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
@@ -113,11 +113,11 @@ public class GenericRelationsTests extends GenericTests {
         }
     }
 
-    public void manyToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childSetterName, String childGetterName, String childFinderName) throws Exception {
+    public void manyToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Retrieve Classes and Methods
         Class parentClass = Class.forName(parentObjectDescription.getClassPath());
-        Method setRelationMethod = parentClass.getMethod(childSetterName, List.class);
-        Method getRelationMethod = parentClass.getMethod(childGetterName);
+        Method setRelationMethod = parentClass.getMethod(childObjectDescription.getSetToMany(), List.class);
+        Method getRelationMethod = parentClass.getMethod(childObjectDescription.getGetToMany());
 
         // Create Objects
         List<Object> parentObjects = objectBuilder.buildObjectList(parentObjectDescription, LIST_COUNT);
@@ -146,7 +146,7 @@ public class GenericRelationsTests extends GenericTests {
             }
         }
 
-        finderMethodTest(parentObjectDescription.getClassPath(), parentObjects, childObjectDescription.getClassPath(), childObjects, childFinderName);
+        finderMethodTest(parentObjectDescription.getClassPath(), parentObjects, childObjectDescription.getClassPath(), childObjects, "findBy" + childObjectDescription.getClassName() + "sContains");
     }
 
     private void finderMethodTest(String parentClassPath, List<Object> parentObjects, String childClassPath, List<Object> childObjects, String childFinderName) throws Exception {

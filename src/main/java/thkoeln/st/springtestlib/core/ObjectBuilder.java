@@ -39,6 +39,14 @@ public class ObjectBuilder {
         return object;
     }
 
+    public Object buildInvalidObject(ObjectDescription objectDescription) throws Exception {
+        Class clazz = Class.forName(objectDescription.getClassPath());
+        Object object = clazz.getConstructor().newInstance();
+
+        setObjectFieldValues(object, objectDescription.getInvalidAttributes());
+        return object;
+    }
+
     public void setObjectFieldValues(Object object, String serializedJson) throws Exception {
         Object newValuesObject = objectMapper.readValue(serializedJson, object.getClass());
 

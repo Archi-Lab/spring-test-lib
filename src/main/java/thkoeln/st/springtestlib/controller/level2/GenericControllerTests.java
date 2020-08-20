@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.GenericTests;
 import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
-import thkoeln.st.springtestlib.core.objectdescription.RESTObjectDescription;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,7 @@ public class GenericControllerTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-    public void getTest(RESTObjectDescription objectDescription) throws Exception {
+    public void getTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
         Object object = objectBuilder.buildObject(objectDescription);
@@ -49,7 +48,7 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateResultActions(object, resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "");
     }
 
-    public void getAllTest(RESTObjectDescription objectDescription) throws Exception {
+    public void getAllTest(ObjectDescription objectDescription) throws Exception {
         // Save Object List
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
         List<Object> objectList = objectBuilder.buildObjectList(objectDescription, GET_ALL_TEST_COUNT);
@@ -68,7 +67,7 @@ public class GenericControllerTests extends GenericTests {
         }
     }
 
-    public void postTest(RESTObjectDescription objectDescription) throws Exception {
+    public void postTest(ObjectDescription objectDescription) throws Exception {
         // Create Object
         Object object = objectBuilder.buildObject(objectDescription);
 
@@ -86,7 +85,7 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateTwoObjects(object, retrievedObject, objectDescription.getAttributes());
     }
 
-    public void putTest(RESTObjectDescription objectDescription) throws Exception {
+    public void putTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
         Object object = objectBuilder.buildObject(objectDescription);
@@ -107,7 +106,7 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateTwoObjects(object, retrievedObject, objectDescription.getAttributes());
     }
 
-    public void deleteTest(RESTObjectDescription objectDescription) throws Exception {
+    public void deleteTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
         Object object = objectBuilder.buildObject(objectDescription);
@@ -122,7 +121,7 @@ public class GenericControllerTests extends GenericTests {
         assertFalse(objectOp.isPresent());
     }
 
-    public void noRestLevel3Test(RESTObjectDescription objectDescription) throws Exception {
+    public void noRestLevel3Test(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
         Object object = objectBuilder.buildObject(objectDescription);

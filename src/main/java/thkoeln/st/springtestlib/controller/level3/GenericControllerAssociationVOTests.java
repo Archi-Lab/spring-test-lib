@@ -10,7 +10,6 @@ import thkoeln.st.springtestlib.core.Attribute;
 import thkoeln.st.springtestlib.core.GenericTests;
 import thkoeln.st.springtestlib.core.Link;
 import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
-import thkoeln.st.springtestlib.core.objectdescription.RESTObjectDescription;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
-    public Object putOneToOneVOTest(Object parentObject, RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public Object putOneToOneVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         if (parentObject == null) {
@@ -46,17 +45,17 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         // Create Child
         Object childObject = objectBuilder.buildObject(childObjectDescription);
 
-        ResultActions resultActions = putChild(parentObjectDescription.getRestPath(), parentObject, childObject, childAttributeName);
+        ResultActions resultActions = putChild(parentObjectDescription.getRestPath(), parentObject, childObject, childObjectDescription.getAttributeSingular());
 
         // Test Fields
-        objectValidator.validateResultActions(childObject, resultActions, childObjectDescription.getAttributes(), new Attribute[]{}, "." + childAttributeName);
+        objectValidator.validateResultActions(childObject, resultActions, childObjectDescription.getAttributes(), new Attribute[]{}, "." + childObjectDescription.getAttributeSingular());
         objectValidator.validateResultActionLinks(Collections.singletonList(parentObject), resultActions, expectedLinks, hiddenLinks, "");
 
-        objectValidator.assertToOneRelation(parentRepository, parentObject, childObject, childGetterName, false);
+        objectValidator.assertToOneRelation(parentRepository, parentObject, childObject, childObjectDescription.getGetToOne(), false);
         return childObject;
     }
 
-    public Object postOneToManyVOTest(Object parentObject, RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public Object postOneToManyVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         if (parentObject == null) {
@@ -67,18 +66,18 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         // Create Children
         Object childObject = objectBuilder.buildObject(childObjectDescription);
 
-        ResultActions resultActions = postChildToCollection(parentObjectDescription.getRestPath(), parentObject, childObject, childAttributeName);
+        ResultActions resultActions = postChildToCollection(parentObjectDescription.getRestPath(), parentObject, childObject, childObjectDescription.getAttributePlural());
 
         // Test Fields
-        String preIdentifier = "." + childAttributeName + "[0]";
+        String preIdentifier = "." + childObjectDescription.getAttributePlural() + "[0]";
         objectValidator.validateResultActions(childObject, resultActions, childObjectDescription.getAttributes(), new Attribute[]{}, preIdentifier);
 
         objectValidator.validateResultActionLinks(Collections.singletonList(parentObject), resultActions, expectedLinks, hiddenLinks, "");
-        objectValidator.assertToManyRelation(parentRepository, parentObject, Collections.singletonList(childObject), childGetterName, false);
+        objectValidator.assertToManyRelation(parentRepository, parentObject, Collections.singletonList(childObject), childObjectDescription.getGetToMany(), false);
         return childObject;
     }
 
-    public void deleteOneToManyVOTest(Object parentObject, RESTObjectDescription parentObjectDescription, RESTObjectDescription childObjectDescription, String childAttributeName, String childGetterName, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+    public void deleteOneToManyVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
         if (parentObject == null) {
@@ -86,17 +85,17 @@ public class GenericControllerAssociationVOTests extends GenericTests {
             parentRepository.save(parentObject);
 
             List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
-            Field childField = parentObject.getClass().getDeclaredField(childAttributeName);
+            Field childField = parentObject.getClass().getDeclaredField(childObjectDescription.getAttributePlural());
             childField.setAccessible(true);
             childField.set(parentObject, childObjects);
         }
 
         ResultActions resultActions = mockMvc
-            .perform(delete(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childAttributeName))
+            .perform(delete(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
             .andExpect(status().isOk());
 
         objectValidator.validateResultActionLinks(Collections.singletonList(parentObject), resultActions, expectedLinks, hiddenLinks, "");
-        objectValidator.assertToManyRelation(parentRepository, parentObject, new ArrayList<>() {}, childGetterName, false);
+        objectValidator.assertToManyRelation(parentRepository, parentObject, new ArrayList<>() {}, childObjectDescription.getGetToMany(), false);
     }
 
     private ResultActions putChild(String restPath, Object parentObject, Object childObject, String childAttributeName) throws Exception {

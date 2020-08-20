@@ -34,49 +34,49 @@ public class GenericAggregateTests extends GenericTests {
         assertTrue(noRepoForReferencedEntity);
     }
 
-    public void referencedObjectAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
+    public void referencedObjectAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         assertTrue(
-            referencedObjectAsCopyTest(parentObjectDescription, childObjectDescription, childAttributeName, childGetterName) ||
+            referencedObjectAsCopyTest(parentObjectDescription, childObjectDescription) ||
                     noSetterInVOTest(childObjectDescription.getClassPath(), childObjectDescription.getAttributes())
         );
     }
 
-    public void referencedObjectCollectionAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
+    public void referencedObjectCollectionAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         assertTrue(
-            referencedObjectCollectionAsCopyTest(parentObjectDescription, childObjectDescription, childAttributeName, childGetterName) ||
+            referencedObjectCollectionAsCopyTest(parentObjectDescription, childObjectDescription) ||
                     noSetterInVOTest(childObjectDescription.getClassPath(), childObjectDescription.getAttributes())
         );
     }
 
-    private boolean referencedObjectAsCopyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
+    private boolean referencedObjectAsCopyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Child
         Object childObject = objectBuilder.buildObject(childObjectDescription);
 
         // Create Parent
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
-        Field childField = parentObject.getClass().getDeclaredField(childAttributeName);
+        Field childField = parentObject.getClass().getDeclaredField(childObjectDescription.getAttributeSingular());
         childField.setAccessible(true);
         childField.set(parentObject, childObject);
 
         // Retrieve Child
-        Method getRelationMethod = parentObject.getClass().getMethod(childGetterName);
+        Method getRelationMethod = parentObject.getClass().getMethod(childObjectDescription.getGetToOne());
         Object retrievedChildObject = getRelationMethod.invoke(parentObject);
 
         return childObject != retrievedChildObject;
     }
 
-    private boolean referencedObjectCollectionAsCopyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, String childAttributeName, String childGetterName) throws Exception {
+    private boolean referencedObjectCollectionAsCopyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Childs
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_OBJECT_COUNT);
 
         // Create Parent
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
-        Field childField = parentObject.getClass().getDeclaredField(childAttributeName);
+        Field childField = parentObject.getClass().getDeclaredField(childObjectDescription.getAttributePlural());
         childField.setAccessible(true);
         childField.set(parentObject, childObjects);
 
         // Retrieve Childs
-        Method getRelationMethod = parentObject.getClass().getMethod(childGetterName);
+        Method getRelationMethod = parentObject.getClass().getMethod(childObjectDescription.getGetToMany());
         List<Object> retrievedChildObjects = (List)getRelationMethod.invoke(parentObject);
 
         // Assert not Same

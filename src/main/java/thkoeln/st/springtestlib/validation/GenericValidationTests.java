@@ -25,7 +25,7 @@ public class GenericValidationTests extends GenericTests {
     }
 
     public void checkValidation(ObjectDescription objectDescription, int expectedViolations) throws Exception {
-        Object object = objectBuilder.buildObject(objectDescription);
+        Object object = objectBuilder.buildInvalidObject(objectDescription);
 
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(object);
 

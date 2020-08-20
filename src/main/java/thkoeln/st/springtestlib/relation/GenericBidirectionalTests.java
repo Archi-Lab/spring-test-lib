@@ -2,6 +2,7 @@ package thkoeln.st.springtestlib.relation;
 
 import org.springframework.web.context.WebApplicationContext;
 import thkoeln.st.springtestlib.core.GenericTests;
+import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -15,9 +16,9 @@ public class GenericBidirectionalTests extends GenericTests {
         super(appContext);
     }
 
-    public void toManyNotBidirectionalTest(String parentClassPath, String childClassPath) throws Exception {
-        Class parentClass = Class.forName(parentClassPath);
-        Class childClass = Class.forName(childClassPath);
+    public void toManyNotBidirectionalTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
+        Class parentClass = Class.forName(parentObjectDescription.getClassPath());
+        Class childClass = Class.forName(childObjectDescription.getClassPath());
 
         for (Field declaredField : childClass.getDeclaredFields()) {
             if (Collection.class.isAssignableFrom(declaredField.getType())) {
@@ -28,9 +29,9 @@ public class GenericBidirectionalTests extends GenericTests {
         }
     }
 
-    public void toOneNotBidirectionalTest(String parentClassPath, String childClassPath) throws Exception {
-        Class parentClass = Class.forName(parentClassPath);
-        Class childClass = Class.forName(childClassPath);
+    public void toOneNotBidirectionalTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
+        Class parentClass = Class.forName(parentObjectDescription.getClassPath());
+        Class childClass = Class.forName(childObjectDescription.getClassPath());
 
         for (Field declaredField : childClass.getDeclaredFields()) {
             assertNotEquals(parentClass, declaredField.getType());
