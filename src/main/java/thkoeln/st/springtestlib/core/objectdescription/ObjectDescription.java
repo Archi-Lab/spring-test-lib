@@ -18,10 +18,10 @@ public class ObjectDescription {
     private String attributeSingular;
     private String attributePlural;
 
-    private Attribute[] attributes;
-    private Attribute[] invalidAttributes;
-    private Attribute[] updatedAttributes;
-    private Attribute[] hiddenAttributes;
+    private Attribute[] attributes = new Attribute[]{};
+    private Attribute[] invalidAttributes = new Attribute[]{};
+    private Attribute[] updatedAttributes = new Attribute[]{};
+    private Attribute[] hiddenAttributes = new Attribute[]{};
 
     private String serializedJson;
 
@@ -29,25 +29,17 @@ public class ObjectDescription {
     public ObjectDescription() {}
 
     public void init() {
-        if (attributes != null) {
-            for (Attribute attribute : attributes) {
-                attribute.buildAttribute();
-            }
+        for (Attribute attribute : attributes) {
+            attribute.buildAttribute();
         }
-        if (invalidAttributes != null) {
-            for (Attribute attribute : invalidAttributes) {
-                attribute.buildAttribute();
-            }
+        for (Attribute attribute : invalidAttributes) {
+            attribute.buildAttribute();
         }
-        if (updatedAttributes != null) {
-            for (Attribute attribute : updatedAttributes) {
-                attribute.buildAttribute();
-            }
+        for (Attribute attribute : updatedAttributes) {
+            attribute.buildAttribute();
         }
-        if (hiddenAttributes != null) {
-            for (Attribute attribute : hiddenAttributes) {
-                attribute.buildAttribute();
-            }
+        for (Attribute attribute : hiddenAttributes) {
+            attribute.buildAttribute();
         }
     }
 
