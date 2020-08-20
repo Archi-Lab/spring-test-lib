@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class GenericControllerReturnCodeTest extends GenericTests {
 
+    private static final String BASE_PATH = "/level-2";
     private static final int GET_ALL_TEST_COUNT = 4;
 
     private MockMvc mockMvc;
@@ -48,7 +49,7 @@ public class GenericControllerReturnCodeTest extends GenericTests {
     public void wrongIDTest(ObjectDescription objectDescription) throws Exception {
         // Perform get
         ResultActions resultActions = mockMvc
-                .perform(get(objectDescription.getRestPath() + "/" + UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON))
+                .perform(get(BASE_PATH + objectDescription.getRestPath() + "/" + UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -61,7 +62,7 @@ public class GenericControllerReturnCodeTest extends GenericTests {
 
         // Perform delete
         mockMvc
-                .perform(delete(objectDescription.getRestPath() + "/" + oir.getId(object)))
+                .perform(delete(BASE_PATH + objectDescription.getRestPath() + "/" + oir.getId(object)))
                 .andExpect(status().isMethodNotAllowed());
 
         Optional<Object> objectOp = repository.findById(oir.getId(object));
@@ -70,12 +71,12 @@ public class GenericControllerReturnCodeTest extends GenericTests {
 
     public void invalidValueTest(ObjectDescription objectDescription) throws Exception {
         // Create Object
-        Object object = objectBuilder.buildObject(objectDescription);
+        Object object = objectBuilder.buildInvalidObject(objectDescription);
 
         // Perform Post
         ResultActions resultActions = mockMvc
                 .perform(
-                        post(objectDescription.getRestPath())
+                        post(BASE_PATH + objectDescription.getRestPath())
                                 .content(objectMapper.writeValueAsString(object))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity());

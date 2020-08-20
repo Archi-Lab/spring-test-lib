@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class GenericControllerTests extends GenericTests {
 
+    private static final String BASE_PATH = "/level-2";
     private static final int GET_ALL_TEST_COUNT = 4;
 
     private MockMvc mockMvc;
@@ -42,7 +43,7 @@ public class GenericControllerTests extends GenericTests {
 
         // Perform get
         ResultActions resultActions = mockMvc
-                .perform(get(objectDescription.getRestPath() + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON))
+                .perform(get(BASE_PATH + objectDescription.getRestPath() + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         objectValidator.validateResultActions(object, resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "");
@@ -58,7 +59,7 @@ public class GenericControllerTests extends GenericTests {
 
         // Perform getAll
         ResultActions resultActions = mockMvc
-                .perform(get(objectDescription.getRestPath()).contentType(MediaType.APPLICATION_JSON))
+                .perform(get(BASE_PATH + objectDescription.getRestPath()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         // Test Fields
@@ -74,7 +75,7 @@ public class GenericControllerTests extends GenericTests {
         // Perform Post
         ResultActions resultActions = mockMvc
                 .perform(
-                        post(objectDescription.getRestPath())
+                        post(BASE_PATH + objectDescription.getRestPath())
                                 .content(objectMapper.writeValueAsString(object))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -97,7 +98,7 @@ public class GenericControllerTests extends GenericTests {
         // Perform put
         mockMvc
                 .perform(
-                        put(objectDescription.getRestPath() + "/" + oir.getId(object))
+                        put(BASE_PATH + objectDescription.getRestPath() + "/" + oir.getId(object))
                                 .content(objectMapper.writeValueAsString(object))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -114,7 +115,7 @@ public class GenericControllerTests extends GenericTests {
 
         // Perform delete
         mockMvc
-                .perform(delete(objectDescription.getRestPath() + "/" + oir.getId(object)))
+                .perform(delete(BASE_PATH + objectDescription.getRestPath() + "/" + oir.getId(object)))
                 .andExpect(status().isNoContent());
 
         Optional<Object> objectOp = repository.findById(oir.getId(object));
@@ -129,7 +130,7 @@ public class GenericControllerTests extends GenericTests {
 
         // Perform get
         MockHttpServletResponse getResponse = mockMvc
-                .perform(get(objectDescription.getRestPath() + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+                .perform(get(BASE_PATH + objectDescription.getRestPath() + "/" + oir.getId(object)).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
         assertTrue(
                 getResponse.getStatus() == HttpStatus.NOT_FOUND.value()
@@ -137,7 +138,7 @@ public class GenericControllerTests extends GenericTests {
 
         // Perform getAll
         MockHttpServletResponse getAllResponse = mockMvc
-                .perform(get(objectDescription.getRestPath()).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+                .perform(get(BASE_PATH + objectDescription.getRestPath()).contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
 
         assertTrue(
                 getAllResponse.getStatus() == HttpStatus.NOT_FOUND.value()

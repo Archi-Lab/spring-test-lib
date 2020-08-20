@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class GenericControllerAssociationVOTests extends GenericTests {
 
+    private static final String BASE_PATH = "/level-2";
     private static final int COLLECTION_COUNT = 4;
 
     private MockMvc mockMvc;
@@ -47,7 +48,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         parentRepository.save(parentObject);
 
         mockMvc
-            .perform(get(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
+            .perform(get(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
             .andExpect(jsonPath(childObjectDescription.getAttributeSingular()).exists())
             .andExpect(status().isOk());
     }
@@ -79,7 +80,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         parentRepository.save(parentObject);
 
         mockMvc
-                .perform(get(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
+                .perform(get(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
                 .andExpect(jsonPath(childObjectDescription.getAttributePlural()).exists())
                 .andExpect(status().isOk());
     }
@@ -114,7 +115,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         childField.set(parentObject, childObjects);
 
         ResultActions resultActions = mockMvc
-            .perform(delete(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
+            .perform(delete(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
             .andExpect(status().isOk());
 
         objectValidator.assertToManyRelation(parentRepository, parentObject, new ArrayList<>() {}, childObjectDescription.getGetToMany(), false);
@@ -122,7 +123,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
 
     private ResultActions putChild(String restPath, Object parentObject, Object childObject, String childAttributeName) throws Exception {
         return mockMvc
-                .perform(put(restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
+                .perform(put(BASE_PATH + restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
                         .content(objectMapper.writeValueAsString(childObject))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -130,7 +131,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
 
     private ResultActions postChildToCollection(String restPath, Object parentObject, Object childObject, String childAttributeName) throws Exception {
         return mockMvc
-                .perform(post(restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
+                .perform(post(BASE_PATH + restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
                         .content(objectMapper.writeValueAsString(childObject))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

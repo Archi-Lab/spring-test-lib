@@ -20,6 +20,7 @@ public class Attribute {
     public void buildAttribute() {
         if (serializedValue.equals("null")) {
             value = null;
+            return;
         }
 
         switch (type) {

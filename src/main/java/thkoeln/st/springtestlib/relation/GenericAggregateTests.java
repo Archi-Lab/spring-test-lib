@@ -22,11 +22,11 @@ public class GenericAggregateTests extends GenericTests {
         super(appContext);
     }
 
-    public void noRepositoryForClassTest(String referencedClassClassPath) throws Exception {
+    public void noRepositoryForClassTest(ObjectDescription objectDescription) throws Exception {
         boolean noRepoForReferencedEntity = false;
 
         try {
-            oir.getRepository(referencedClassClassPath);
+            oir.getRepository(objectDescription.getClassPath());
         } catch (NoSuchElementException e) {
             noRepoForReferencedEntity = true;
         }

@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class GenericControllerAssociationVOTests extends GenericTests {
 
+    private static final String BASE_PATH = "/level-3";
     private static final int COLLECTION_COUNT = 4;
 
     private MockMvc mockMvc;
@@ -91,7 +92,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         }
 
         ResultActions resultActions = mockMvc
-            .perform(delete(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
+            .perform(delete(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
             .andExpect(status().isOk());
 
         objectValidator.validateResultActionLinks(Collections.singletonList(parentObject), resultActions, expectedLinks, hiddenLinks, "");
@@ -100,7 +101,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
 
     private ResultActions putChild(String restPath, Object parentObject, Object childObject, String childAttributeName) throws Exception {
         return mockMvc
-                .perform(put(restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
+                .perform(put(BASE_PATH + restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
                         .content(objectMapper.writeValueAsString(childObject))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -108,7 +109,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
 
     private ResultActions postChildToCollection(String restPath, Object parentObject, Object childObject, String childAttributeName) throws Exception {
         return mockMvc
-                .perform(post(restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
+                .perform(post(BASE_PATH + restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
                         .content(objectMapper.writeValueAsString(childObject))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class GenericControllerAssociationTests extends GenericTests {
 
+    private static final String BASE_PATH = "/level-2";
     private static final int COLLECTION_COUNT = 4;
 
     private MockMvc mockMvc;
@@ -44,7 +45,7 @@ public class GenericControllerAssociationTests extends GenericTests {
 
         // Perform put
         mockMvc
-                .perform(put(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getGetToOne())
+                .perform(put(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributeSingular())
                         .content(objectMapper.writeValueAsString(childObject))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -67,7 +68,7 @@ public class GenericControllerAssociationTests extends GenericTests {
 
         // Perform get
         mockMvc
-                .perform(get(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributeSingular()))
+                .perform(get(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributeSingular()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(oir.getId(childObject).toString()));
     }
@@ -87,7 +88,7 @@ public class GenericControllerAssociationTests extends GenericTests {
 
         // Perform delete
         mockMvc
-                .perform(delete(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributeSingular()))
+                .perform(delete(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributeSingular()))
                 .andExpect(status().isNoContent());
 
         objectValidator.assertToOneRelation(parentRepository, parentObject, null, childObjectDescription.getGetToOne(), true);
@@ -125,7 +126,7 @@ public class GenericControllerAssociationTests extends GenericTests {
 
         // Perform get
         ResultActions resultActions = mockMvc
-                .perform(get(parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
+                .perform(get(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
                 .andExpect(status().isOk());
 
         for (int i = 0; i < childObjects.size(); i++) {
@@ -143,7 +144,7 @@ public class GenericControllerAssociationTests extends GenericTests {
         // Perform get
         String expectedId = oir.getId(childObjects.get(0)).toString();
         mockMvc
-                .perform(get(parentObjectDescription.getRestPath()
+                .perform(get(BASE_PATH + parentObjectDescription.getRestPath()
                         + "/" + oir.getId(parentObject)
                         + "/" + childObjectDescription.getAttributePlural()
                         + "/" + expectedId))
@@ -160,7 +161,7 @@ public class GenericControllerAssociationTests extends GenericTests {
         // Perform delete
         String expectedId = oir.getId(childObjects.get(0)).toString();
         mockMvc
-                .perform(delete(parentObjectDescription.getRestPath()
+                .perform(delete(BASE_PATH + parentObjectDescription.getRestPath()
                         + "/" + oir.getId(parentObject)
                         + "/" + childObjectDescription.getAttributePlural()
                         + "/" + expectedId))
@@ -172,7 +173,7 @@ public class GenericControllerAssociationTests extends GenericTests {
 
     private void putObjects(String restPath, Object parentObject, List<Object> childObjects, String childAttributeName) throws Exception {
         mockMvc
-                .perform(put(restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
+                .perform(put(BASE_PATH + restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
                         .content(objectMapper.writeValueAsString(childObjects))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
