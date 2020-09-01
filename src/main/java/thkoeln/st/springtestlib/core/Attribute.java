@@ -1,5 +1,8 @@
 package thkoeln.st.springtestlib.core;
 
+/**
+ * This class represents one attribute of an entity or value object
+ */
 public class Attribute {
 
     private String name;
@@ -17,6 +20,9 @@ public class Attribute {
         buildAttribute();
     }
 
+    /**
+     * Deserializes the serializedValue attribute based on the attribute type
+     */
     public void buildAttribute() {
         if (serializedValue.equals("null")) {
             value = null;

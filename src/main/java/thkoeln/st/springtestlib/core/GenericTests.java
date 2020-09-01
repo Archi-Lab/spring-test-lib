@@ -2,6 +2,9 @@ package thkoeln.st.springtestlib.core;
 
 import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * This class is the foundation for all Generic Test Classes and contains useful instances for building, validating and retrieving information from entities and value objects
+ */
 public abstract class GenericTests {
 
     protected ObjectBuilder objectBuilder;

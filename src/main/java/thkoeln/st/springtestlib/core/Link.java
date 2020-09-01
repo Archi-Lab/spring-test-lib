@@ -3,6 +3,9 @@ package thkoeln.st.springtestlib.core;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * This class represents an http link which follows the principles of REST maturity level 3
+ */
 public class Link {
 
     private static final String ID_PLACEHOLDER = "{id}";
@@ -17,6 +20,10 @@ public class Link {
         this.link = link;
     }
 
+    /**
+     * Replaces all placeholders for ids in the link with the given ids
+     * @param ids sorted list of the ids which should replace the placeholder
+     */
     public void calculateCustomizedLink(List<UUID> ids) {
         String[] splitLink = link.split("/");
 
@@ -50,6 +57,11 @@ public class Link {
         return true;
     }
 
+    /**
+     * Removes the protocol and domain from a link
+     * @param link link containing protocol and domain
+     * @return link without protocol and domain
+     */
     public static String getDomainLessLink(String link) {
         link = link.trim();
 

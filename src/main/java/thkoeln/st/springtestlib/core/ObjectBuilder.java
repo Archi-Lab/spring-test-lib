@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class is used to instantiate objects based on a given class and given attributes
+ */
 public class ObjectBuilder {
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * deprecated
      * @param classPath
@@ -27,6 +31,12 @@ public class ObjectBuilder {
         return object;
     }
 
+    /**
+     * Instantiate an object based on an objectDescription
+     * @param objectDescription abstract description of an object
+     * @return the newly generated object
+     * @throws Exception
+     */
     public Object buildObject(ObjectDescription objectDescription) throws Exception {
         Class clazz = Class.forName(objectDescription.getClassPath());
         Object object = clazz.getConstructor().newInstance();
@@ -39,6 +49,12 @@ public class ObjectBuilder {
         return object;
     }
 
+    /**
+     * Instantiate an invalid object (violating constraints) based on an objectDescription
+     * @param objectDescription abstract description of an object
+     * @return the newly generated invalid object
+     * @throws Exception
+     */
     public Object buildInvalidObject(ObjectDescription objectDescription) throws Exception {
         Class clazz = Class.forName(objectDescription.getClassPath());
         Object object = clazz.getConstructor().newInstance();
@@ -47,6 +63,12 @@ public class ObjectBuilder {
         return object;
     }
 
+    /**
+     * Overwrites all attribute values which are contained in the serializedJson
+     * @param object object which attributes should be overwritten
+     * @param serializedJson serialized version of the object
+     * @throws Exception
+     */
     public void setObjectFieldValues(Object object, String serializedJson) throws Exception {
         Object newValuesObject = objectMapper.readValue(serializedJson, object.getClass());
 
@@ -56,6 +78,12 @@ public class ObjectBuilder {
         }
     }
 
+    /**
+     * Overwrites all attribute values which are contained in the attribute list
+     * @param object object which attributes should be overwritten
+     * @param attributes list of attributes which should be used for overwriting attribute values
+     * @throws Exception
+     */
     public void setObjectFieldValues(Object object, Attribute[] attributes) throws Exception {
         List<Attribute> attributeList = new ArrayList<>(Arrays.asList(attributes));
 
@@ -85,6 +113,11 @@ public class ObjectBuilder {
         }
     }
 
+    /**
+     * Checks if a field references a value object
+     * @param field field which should be testd
+     * @return true of the given field references a value object
+     */
     public boolean isValueObject(Field field) {
         Annotation[] valueObjectAnnotations = field.getType().getAnnotations();
         for (Annotation annotation : valueObjectAnnotations) {
@@ -134,6 +167,13 @@ public class ObjectBuilder {
         return objects;
     }
 
+    /**
+     * Instantiate a list of objects based on an objectDescription
+     * @param objectDescription abstract description of an object
+     * @param count the number of objects to be generated
+     * @return the newly generated object list
+     * @throws Exception
+     */
     public List<Object> buildObjectList(ObjectDescription objectDescription, int count) throws Exception {
         List<Object> objects = new ArrayList<>();
         for (int i = 0; i < count; i++) {
