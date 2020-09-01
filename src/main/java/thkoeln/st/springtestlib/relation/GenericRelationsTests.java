@@ -11,7 +11,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+/**
+ * This class contains methods to ensure specific relationships are implemented correctly.
+ * The type of the relationship results from the method name.
+ * Methods with the postfix "VO" are only used to relationships with value objects as children.
+ * All other method are used for entities as children
+ */
 public class GenericRelationsTests extends GenericTests {
 
     private static final int LIST_COUNT = 3;

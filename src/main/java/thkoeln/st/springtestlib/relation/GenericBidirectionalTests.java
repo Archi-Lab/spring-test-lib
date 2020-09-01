@@ -10,12 +10,21 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+/**
+ * RelationShips should not be bidirectional. This class contains tests to ensure this
+ */
 public class GenericBidirectionalTests extends GenericTests {
 
     public GenericBidirectionalTests(WebApplicationContext appContext) {
         super(appContext);
     }
 
+    /**
+     * Checks if a relationship containing multiple children is bidirectional or not
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void toManyNotBidirectionalTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         Class parentClass = Class.forName(parentObjectDescription.getClassPath());
         Class childClass = Class.forName(childObjectDescription.getClassPath());
@@ -29,6 +38,12 @@ public class GenericBidirectionalTests extends GenericTests {
         }
     }
 
+    /**
+     * Checks if a relationship containing one child is bidirectional or not
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void toOneNotBidirectionalTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         Class parentClass = Class.forName(parentObjectDescription.getClassPath());
         Class childClass = Class.forName(childObjectDescription.getClassPath());

@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+/**
+ * This class contains tests which ensure that certain aggregate rules are met
+ */
 public class GenericAggregateTests extends GenericTests {
 
     private static final int COLLECTION_OBJECT_COUNT = 2;
@@ -22,6 +24,11 @@ public class GenericAggregateTests extends GenericTests {
         super(appContext);
     }
 
+    /**
+     * Check if there exists a repository for a certain object
+     * @param objectDescription description of the object which should not have a repository
+     * @throws Exception
+     */
     public void noRepositoryForClassTest(ObjectDescription objectDescription) throws Exception {
         boolean noRepoForReferencedEntity = false;
 
@@ -34,6 +41,12 @@ public class GenericAggregateTests extends GenericTests {
         assertTrue(noRepoForReferencedEntity);
     }
 
+    /**
+     * Check if value objects inside aggregates are readonly or returned as a copy
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void referencedObjectAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         assertTrue(
             referencedObjectAsCopyTest(parentObjectDescription, childObjectDescription) ||
@@ -41,6 +54,12 @@ public class GenericAggregateTests extends GenericTests {
         );
     }
 
+    /**
+     * Check if value objects contained in lists inside aggregates are readonly or returned as a copy
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void referencedObjectCollectionAsCopyOrNoSetterTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         assertTrue(
             referencedObjectCollectionAsCopyTest(parentObjectDescription, childObjectDescription) ||
