@@ -4,8 +4,14 @@ import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
 
 import java.lang.annotation.Annotation;
 
+
 public class GenericValueObjectTests {
 
+    /**
+     * Checks if the given object is implemented as a value object
+     * @param valueObjectDescription description of the right object
+     * @throws Exception
+     */
     public void correctValueObjectTest(ObjectDescription valueObjectDescription) throws Exception {
         try {
             // Retrieve Classes

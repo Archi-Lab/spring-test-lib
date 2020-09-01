@@ -13,6 +13,9 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * This class is used to check whether object fields contain certain constraints to ensure valid objects
+ */
 public class GenericValidationTests extends GenericTests {
 
     private Validator validator;
@@ -24,6 +27,12 @@ public class GenericValidationTests extends GenericTests {
         validator = factory.getValidator();
     }
 
+    /**
+     * Check whether an invalid object results in the right amount of violations
+     * @param objectDescription description of the object which should be checked
+     * @param expectedViolations expected number of violations
+     * @throws Exception
+     */
     public void checkValidation(ObjectDescription objectDescription, int expectedViolations) throws Exception {
         Object object = objectBuilder.buildInvalidObject(objectDescription);
 

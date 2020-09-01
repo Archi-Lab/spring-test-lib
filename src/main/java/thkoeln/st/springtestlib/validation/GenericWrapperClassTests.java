@@ -5,8 +5,14 @@ import thkoeln.st.springtestlib.core.objectdescription.ObjectDescription;
 
 import java.lang.reflect.Field;
 
+
 public class GenericWrapperClassTests {
 
+    /**
+     * Checks if only wrapper classes are used as types for attributes
+     * @param objectDescription description of the object which attributes should be checked
+     * @throws Exception
+     */
     public void onlyWrapperClassTest(ObjectDescription objectDescription) throws Exception {
         boolean containsPrimitives = false;
 
