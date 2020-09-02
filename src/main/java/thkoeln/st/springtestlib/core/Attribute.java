@@ -36,6 +36,12 @@ public class Attribute {
             case "Float":
                 value = Float.parseFloat(serializedValue);
                 break;
+            case "Double":
+                value = Double.parseDouble(serializedValue);
+                break;
+            case "Boolean":
+                value = Boolean.parseBoolean(serializedValue);
+                break;
             case "String":
                 value = serializedValue;
                 break;
