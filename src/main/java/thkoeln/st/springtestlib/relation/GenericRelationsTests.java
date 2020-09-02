@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This class contains methods to ensure specific relationships are implemented correctly.
+ * Ensure specific relationships are implemented correctly.
  * The type of the relationship results from the method name.
  * Methods with the postfix "VO" are only used to relationships with value objects as children.
  * All other method are used for entities as children
@@ -25,7 +25,12 @@ public class GenericRelationsTests extends GenericTests {
         super(appContext);
     }
 
-    // Generic Test Methods
+    /**
+     * Relationship: one to one (entity)
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void oneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent & Child object
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
@@ -46,6 +51,12 @@ public class GenericRelationsTests extends GenericTests {
         assertEquals(childObject, retrievedChildObject);
     }
 
+    /**
+     * Relationship: one to one (value object)
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void oneToOneVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent & Child object
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
@@ -65,6 +76,12 @@ public class GenericRelationsTests extends GenericTests {
         assertEquals(childObject, retrievedChildObject);
     }
 
+    /**
+     * Relationship: one to many (value object)
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void oneToManyVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent & Child object
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
@@ -87,10 +104,22 @@ public class GenericRelationsTests extends GenericTests {
         }
     }
 
+    /**
+     * Relationship: many to one (entity)
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void manyToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         oneToOneTest(parentObjectDescription, childObjectDescription);
     }
 
+    /**
+     * Relationship: one to many (entity)
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void oneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Retrieve Classes and Methods
         Class parentClass = Class.forName(parentObjectDescription.getClassPath());
@@ -118,6 +147,12 @@ public class GenericRelationsTests extends GenericTests {
         }
     }
 
+    /**
+     * Relationship: many to many (entity)
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void manyToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Retrieve Classes and Methods
         Class parentClass = Class.forName(parentObjectDescription.getClassPath());

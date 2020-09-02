@@ -20,6 +20,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Ensure certain relationships are implemented in a specific REST maturity level 2 controller.
+ * The type of the relationship results from the method name.
+ * All test methods in this class are used for value objects as children
+ * Note that all test methods in this class require the base path "/level-2"
+ */
 public class GenericControllerAssociationVOTests extends GenericTests {
 
     private static final String BASE_PATH = "/level-2";
@@ -35,6 +41,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Method: GET
+     * Relationship: one to one
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void getOneToOneVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -53,6 +66,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
             .andExpect(status().isOk());
     }
 
+    /**
+     * Method: PUT
+     * Relationship: one to one
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public Object putOneToOneVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -67,6 +87,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         return childObject;
     }
 
+    /**
+     * Method: GET
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void getOneToManyVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Create Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -85,6 +112,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Method: POST
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public Object postOneToManyVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -103,6 +137,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         return childObject;
     }
 
+    /**
+     * Method: DELETE
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void deleteOneToManyVOTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());

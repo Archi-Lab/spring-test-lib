@@ -17,6 +17,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+/**
+ * Ensure that implemented REST methods return the right status codes
+ * Note that all test methods in this class require the base path "/level-2"
+ */
 public class GenericControllerReturnCodeTest extends GenericTests {
 
     private static final String BASE_PATH = "/level-2";

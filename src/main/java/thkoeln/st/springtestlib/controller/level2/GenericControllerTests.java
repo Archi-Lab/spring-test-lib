@@ -20,6 +20,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+/**
+ * Check whether specified CRUD methods are implemented in a specific REST maturity level 2 controller.
+ * The type of the REST method results from the http verb which is contained in the method name.
+ * Note that all test methods in this class require the base path "/level-2"
+ */
 public class GenericControllerTests extends GenericTests {
 
     private static final String BASE_PATH = "/level-2";
@@ -35,6 +40,11 @@ public class GenericControllerTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Method: GET
+     * @param objectDescription object description of the object which this action is performed on
+     * @throws Exception
+     */
     public void getTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
@@ -49,6 +59,11 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateResultActions(object, resultActions, objectDescription.getAttributes(), objectDescription.getHiddenAttributes(), "");
     }
 
+    /**
+     * Method: GET ALL
+     * @param objectDescription object description of the object which this action is performed on
+     * @throws Exception
+     */
     public void getAllTest(ObjectDescription objectDescription) throws Exception {
         // Save Object List
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
@@ -68,6 +83,11 @@ public class GenericControllerTests extends GenericTests {
         }
     }
 
+    /**
+     * Method: POST
+     * @param objectDescription object description of the object which this action is performed on
+     * @throws Exception
+     */
     public void postTest(ObjectDescription objectDescription) throws Exception {
         // Create Object
         Object object = objectBuilder.buildObject(objectDescription);
@@ -86,6 +106,11 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateTwoObjects(object, retrievedObject, objectDescription.getAttributes());
     }
 
+    /**
+     * Method: PUT
+     * @param objectDescription object description of the object which this action is performed on
+     * @throws Exception
+     */
     public void putTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
@@ -107,6 +132,11 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateTwoObjects(object, retrievedObject, objectDescription.getAttributes());
     }
 
+    /**
+     * Method: DELETE
+     * @param objectDescription object description of the object which this action is performed on
+     * @throws Exception
+     */
     public void deleteTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());
@@ -122,6 +152,11 @@ public class GenericControllerTests extends GenericTests {
         assertFalse(objectOp.isPresent());
     }
 
+    /**
+     * Checks whether the implemented REST controller is a REST maturity level 2 controller and not one with links (level 3)
+     * @param objectDescription description of the object which is exposed through a controller
+     * @throws Exception
+     */
     public void noRestLevel3Test(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository repository = oir.getRepository(objectDescription.getClassPath());

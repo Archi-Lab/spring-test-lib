@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class is used to instantiate objects based on a given class and given attributes
+ * Instantiates objects based on a given class and given attributes
  */
 public class ObjectBuilder {
 

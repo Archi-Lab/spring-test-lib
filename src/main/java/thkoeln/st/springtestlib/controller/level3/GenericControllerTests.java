@@ -18,6 +18,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+/**
+ * Check whether specified CRUD methods are implemented in a specific REST maturity level 3 controller.
+ * The type of the REST method results from the http verb which is contained in the method name.
+ * Note that all test methods in this class require the base path "/level-3"
+ */
 public class GenericControllerTests extends GenericTests {
 
     private static final String BASE_PATH = "/level-3";
@@ -33,6 +38,15 @@ public class GenericControllerTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Method: GET
+     * @param expectedObject pass an already existing object, pass null if a new one should be created
+     * @param objectDescription object description of the object which this action is performed on
+     * @param expectedLinks list of links which should be included in the response
+     * @param hiddenLinks list of links which should not be included in the response
+     * @return the DTO of the entity
+     * @throws Exception
+     */
     public Object getTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         if (expectedObject == null) {
             CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
@@ -51,6 +65,14 @@ public class GenericControllerTests extends GenericTests {
         return objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), dtoClass);
     }
 
+    /**
+     * Method: GET ALL
+     * @param objectDescription object description of the object which this action is performed on
+     * @param expectedLinks list of links which should be included in the response
+     * @param hiddenLinks list of links which should not be included in the response
+     * @param collectionSelfLink the self link of the collection which should be included in the response
+     * @throws Exception
+     */
     public void getAllTest(ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks, Link collectionSelfLink) throws Exception {
         // Save Object List
         CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
@@ -74,6 +96,14 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateResultActionLinks(new ArrayList<>(){}, resultActions, new Link[]{collectionSelfLink}, new Link[]{}, "");
     }
 
+    /**
+     * Method: POST
+     * @param objectDescription object description of the object which this action is performed on
+     * @param expectedLinks list of links which should be included in the response
+     * @param hiddenLinks list of links which should not be included in the response
+     * @return the created object
+     * @throws Exception
+     */
     public Object postTest(ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         Attribute[] diffAttributes = getAttributeDiff(objectDescription.getAttributes(), objectDescription.getHiddenAttributes());
 
@@ -95,6 +125,14 @@ public class GenericControllerTests extends GenericTests {
         return retrievedObject;
     }
 
+    /**
+     * Method: PUT
+     * @param expectedObject pass an already existing object, pass null if a new one should be created
+     * @param objectDescription object description of the object which this action is performed on
+     * @param expectedLinks list of links which should be included in the response
+     * @param hiddenLinks list of links which should not be included in the response
+     * @throws Exception
+     */
     public void putTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         if (expectedObject == null) {
             CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
@@ -117,6 +155,11 @@ public class GenericControllerTests extends GenericTests {
         objectValidator.validateTwoObjects(expectedObject, retrievedObject, objectDescription.getAttributes());
     }
 
+    /**
+     * Method: DELETE
+     * @param objectDescription object description of the object which this action is performed on
+     * @throws Exception
+     */
     public void deleteTest(ObjectDescription objectDescription) throws Exception {
         // Save Object
         CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());

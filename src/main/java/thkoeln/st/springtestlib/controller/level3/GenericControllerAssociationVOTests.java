@@ -20,6 +20,13 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+/**
+ * Ensure certain relationships are implemented in a specific REST maturity level 3 controller.
+ * The type of the relationship results from the method name.
+ * All test methods in this class are used for value objects as children
+ * Note that all test methods in this class require the base path "/level-3"
+ */
 public class GenericControllerAssociationVOTests extends GenericTests {
 
     private static final String BASE_PATH = "/level-3";
@@ -35,6 +42,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Method: PUT
+     * Relationship: one to one
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public Object putOneToOneVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -56,6 +70,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         return childObject;
     }
 
+    /**
+     * Method: POST
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public Object postOneToManyVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -78,6 +99,13 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         return childObject;
     }
 
+    /**
+     * Method: DELETE
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void deleteOneToManyVOTest(Object parentObject, ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
         // Save Parent
         CrudRepository<Object, UUID> parentRepository = oir.getRepository(parentObjectDescription.getClassPath());

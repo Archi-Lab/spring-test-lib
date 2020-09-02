@@ -14,7 +14,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This class is used to check whether object fields contain certain constraints to ensure valid objects
+ * Check whether object fields contain certain constraints to ensure valid objects
  */
 public class GenericValidationTests extends GenericTests {
 

@@ -17,6 +17,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Ensure certain relationships are implemented in a specific REST maturity level 2 controller.
+ * The type of the relationship results from the method name.
+ * All test methods in this class are used for entities as children
+ * Note that all test methods in this class require the base path "/level-2"
+ */
 public class GenericControllerAssociationTests extends GenericTests {
 
     private static final String BASE_PATH = "/level-2";
@@ -32,6 +38,13 @@ public class GenericControllerAssociationTests extends GenericTests {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Method: PUT
+     * Relationship: one to one
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void putOneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Save Parent
         CrudRepository parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -53,6 +66,13 @@ public class GenericControllerAssociationTests extends GenericTests {
         objectValidator.assertToOneRelation(parentRepository, parentObject, childObject, childObjectDescription.getGetToOne(), true);
     }
 
+    /**
+     * Method: GET
+     * Relationship: one to one
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void getOneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Save Child
         CrudRepository childRepository = oir.getRepository(childObjectDescription.getClassPath());
@@ -73,6 +93,13 @@ public class GenericControllerAssociationTests extends GenericTests {
                 .andExpect(jsonPath("$.id").value(oir.getId(childObject).toString()));
     }
 
+    /**
+     * Method: DELETE
+     * Relationship: one to one
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void deleteOneToOneTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Save Child
         CrudRepository childRepository = oir.getRepository(childObjectDescription.getClassPath());
@@ -94,6 +121,13 @@ public class GenericControllerAssociationTests extends GenericTests {
         objectValidator.assertToOneRelation(parentRepository, parentObject, null, childObjectDescription.getGetToOne(), true);
     }
 
+    /**
+     * Method: PUT
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void putOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         // Save Parent
         CrudRepository parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
@@ -118,6 +152,13 @@ public class GenericControllerAssociationTests extends GenericTests {
         objectValidator.assertToManyRelation(parentRepository, parentObject, childObjects, childObjectDescription.getGetToMany(), true);
     }
 
+    /**
+     * Method: GET ALL
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void getAllOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
@@ -135,6 +176,13 @@ public class GenericControllerAssociationTests extends GenericTests {
         }
     }
 
+    /**
+     * Method: GET
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void getOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
@@ -152,6 +200,13 @@ public class GenericControllerAssociationTests extends GenericTests {
                 .andExpect(jsonPath("$.id").value(expectedId));
     }
 
+    /**
+     * Method: DELETE
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
     public void deleteOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
         Object parentObject = objectBuilder.buildObject(parentObjectDescription);
         List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);

@@ -5,7 +5,8 @@ import thkoeln.st.springtestlib.core.Attribute;
 import java.util.ArrayList;
 
 /**
- * This class is used to describe an entity or value object in an abstract way
+ * Describes an entity or value object in an abstract way
+ * Contains all sorts of information that can be used to perform tests with reflection which are based on the described object
  */
 public class ObjectDescription {
     private String className;

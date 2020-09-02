@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
- * This class contains all sorts of validation method for validating objects and result actions
+ * Contains numerous ways of validating objects and result actions
  */
 public class ObjectValidator {
 

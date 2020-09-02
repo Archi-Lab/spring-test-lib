@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class loads and manages multiple descriptions of different entities or value objects
+ * Loads and manages multiple descriptions of different entities or value objects
  */
 public class ObjectDescriptionManager {
 

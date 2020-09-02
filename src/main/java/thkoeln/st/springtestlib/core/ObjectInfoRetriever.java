@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 /**
- * This class is used to retrieve information from an object such as the corresponding repository or the id of an object
+ * Retrieves information from an object such as the corresponding repository or the id of an object
  */
 public class ObjectInfoRetriever {
 

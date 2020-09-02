@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * This class contains tests which ensure that certain aggregate rules are met
+ * Ensure that certain aggregate rules are met
  */
 public class GenericAggregateTests extends GenericTests {
 

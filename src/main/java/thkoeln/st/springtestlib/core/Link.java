@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * This class represents an http link which follows the principles of REST maturity level 3
+ * Represents an http link which follows the principles of REST maturity level 3
  */
 public class Link {
 

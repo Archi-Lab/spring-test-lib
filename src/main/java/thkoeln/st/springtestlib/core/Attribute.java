@@ -1,7 +1,7 @@
 package thkoeln.st.springtestlib.core;
 
 /**
- * This class represents one attribute of an entity or value object
+ * Represents one attribute of an entity or value object
  */
 public class Attribute {
 
