@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class GenericControllerAssociationVOTests extends GenericTests {
 
-    private static final String BASE_PATH = "/level-2";
+    private static final String BASE_PATH = "";
     private static final int COLLECTION_COUNT = 4;
 
     private MockMvc mockMvc;
@@ -61,7 +61,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         parentRepository.save(parentObject);
 
         mockMvc
-            .perform(get(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
+            .perform(get(BASE_PATH + parentObjectDescription.getRestPathLvl2() + "/" + oir.getId(parentObject)))
             .andExpect(jsonPath(childObjectDescription.getAttributeSingular()).exists())
             .andExpect(status().isOk());
     }
@@ -81,7 +81,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
 
         // Create Child
         Object childObject = objectBuilder.buildObject(childObjectDescription);
-        putChild(parentObjectDescription.getRestPath(), parentObject, childObject, childObjectDescription.getAttributeSingular());
+        putChild(parentObjectDescription.getRestPathLvl2(), parentObject, childObject, childObjectDescription.getAttributeSingular());
 
         objectValidator.assertToOneRelation(parentRepository, parentObject, childObject, childObjectDescription.getGetToOne(), false);
         return childObject;
@@ -107,7 +107,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         parentRepository.save(parentObject);
 
         mockMvc
-                .perform(get(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject)))
+                .perform(get(BASE_PATH + parentObjectDescription.getRestPathLvl2() + "/" + oir.getId(parentObject)))
                 .andExpect(jsonPath(childObjectDescription.getAttributePlural()).exists())
                 .andExpect(status().isOk());
     }
@@ -127,7 +127,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
 
         // Create Children
         Object childObject = objectBuilder.buildObject(childObjectDescription);
-        ResultActions resultActions = postChildToCollection(parentObjectDescription.getRestPath(), parentObject, childObject, childObjectDescription.getAttributePlural());
+        ResultActions resultActions = postChildToCollection(parentObjectDescription.getRestPathLvl2(), parentObject, childObject, childObjectDescription.getAttributePlural());
 
         // Test Fields
         String preIdentifier = "." + childObjectDescription.getAttributePlural() + "[0]";
@@ -156,7 +156,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         childField.set(parentObject, childObjects);
 
         ResultActions resultActions = mockMvc
-            .perform(delete(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
+            .perform(delete(BASE_PATH + parentObjectDescription.getRestPathLvl2() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
             .andExpect(status().isOk());
 
         objectValidator.assertToManyRelation(parentRepository, parentObject, new ArrayList<>() {}, childObjectDescription.getGetToMany(), false);

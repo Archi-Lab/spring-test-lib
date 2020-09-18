@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class GenericControllerAssociationVOTests extends GenericTests {
 
-    private static final String BASE_PATH = "/level-3";
+    private static final String BASE_PATH = "";
     private static final int COLLECTION_COUNT = 4;
 
     private MockMvc mockMvc;
@@ -60,7 +60,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         // Create Child
         Object childObject = objectBuilder.buildObject(childObjectDescription);
 
-        ResultActions resultActions = putChild(parentObjectDescription.getRestPath(), parentObject, childObject, childObjectDescription.getAttributeSingular());
+        ResultActions resultActions = putChild(parentObjectDescription.getRestPathLvl3(), parentObject, childObject, childObjectDescription.getAttributeSingular());
 
         // Test Fields
         objectValidator.validateResultActions(childObject, resultActions, childObjectDescription.getAttributes(), new Attribute[]{}, "." + childObjectDescription.getAttributeSingular());
@@ -88,7 +88,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         // Create Children
         Object childObject = objectBuilder.buildObject(childObjectDescription);
 
-        ResultActions resultActions = postChildToCollection(parentObjectDescription.getRestPath(), parentObject, childObject, childObjectDescription.getAttributePlural());
+        ResultActions resultActions = postChildToCollection(parentObjectDescription.getRestPathLvl3(), parentObject, childObject, childObjectDescription.getAttributePlural());
 
         // Test Fields
         String preIdentifier = "." + childObjectDescription.getAttributePlural() + "[0]";
@@ -120,7 +120,7 @@ public class GenericControllerAssociationVOTests extends GenericTests {
         }
 
         ResultActions resultActions = mockMvc
-            .perform(delete(BASE_PATH + parentObjectDescription.getRestPath() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
+            .perform(delete(BASE_PATH + parentObjectDescription.getRestPathLvl3() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural()))
             .andExpect(status().isOk());
 
         objectValidator.validateResultActionLinks(Collections.singletonList(parentObject), resultActions, expectedLinks, hiddenLinks, "");

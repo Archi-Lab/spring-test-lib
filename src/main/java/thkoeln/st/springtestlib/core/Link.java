@@ -38,9 +38,21 @@ public class Link {
         }
     }
 
+    private String stripLeadingAndTailingSlash(String link) {
+        if (link.charAt(0) == '/') {
+            link = link.substring(1);
+        }
+
+        if (link.charAt(link.length() - 1) == '/') {
+            link = link.substring(0, link.length() - 1);
+        }
+
+        return link;
+    }
+
     public boolean equals(String link) {
-        String[] customizedLinkSplit = customizedLink.split("/");
-        String[] testLinkSplit = link.split("/");
+        String[] customizedLinkSplit = stripLeadingAndTailingSlash(customizedLink).split("/");
+        String[] testLinkSplit = stripLeadingAndTailingSlash(link).split("/");
 
         if (customizedLinkSplit.length != testLinkSplit.length) {
             return false;

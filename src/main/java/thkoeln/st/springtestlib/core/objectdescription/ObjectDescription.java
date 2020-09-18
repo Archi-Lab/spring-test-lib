@@ -12,7 +12,8 @@ public class ObjectDescription {
     private String className;
     private String classPath;
     private String dtoClassPath;
-    private String restPath;
+    private String restPathLvl2;
+    private String restPathLvl3;
 
     private String getToOne;
     private String getToMany;
@@ -71,8 +72,12 @@ public class ObjectDescription {
         return dtoClassPath;
     }
 
-    public String getRestPath() {
-        return restPath;
+    public String getRestPathLvl2() {
+        return restPathLvl2;
+    }
+
+    public String getRestPathLvl3() {
+        return restPathLvl3;
     }
 
     public String getGetToOne() {
