@@ -186,7 +186,13 @@ public class GenericRelationsTests extends GenericTests {
             }
         }
 
-        finderMethodTest(parentObjectDescription.getClassPath(), parentObjects, childObjectDescription.getClassPath(), childObjects, "findBy" + childObjectDescription.getClassName() + "sContains");
+        finderMethodTest(parentObjectDescription.getClassPath(), parentObjects, childObjectDescription.getClassPath(), childObjects, getFinderMethodName(childObjectDescription));
+    }
+
+    private String getFinderMethodName(ObjectDescription objectDescription) {
+        String finderMethodName = objectDescription.getAttributePlural();
+        finderMethodName = finderMethodName.substring(0, 1).toUpperCase() + finderMethodName.substring(1);
+        return "findBy" + finderMethodName + "Contains";
     }
 
     private void finderMethodTest(String parentClassPath, List<Object> parentObjects, String childClassPath, List<Object> childObjects, String childFinderName) throws Exception {
