@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,9 +16,9 @@ public class ObjectDescriptionManager {
 
     private static ObjectDescriptionManager instance;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private Map<String, ObjectDescription> objectDescriptions = new HashMap<>();
+    private final Map<String, ObjectDescription> objectDescriptions = new HashMap<>();
 
 
     public static ObjectDescriptionManager getInstance() {
@@ -42,10 +43,32 @@ public class ObjectDescriptionManager {
         return foundObjectDescription;
     }
 
-    private ObjectDescription loadObjectDescription(String className) {
-        ClassLoader classLoader = getClass().getClassLoader();
+    private String getObjectDescriptionFolderPath () {
+        ClassLoader loader = getClass().getClassLoader();
+        URL url = loader.getResource(".");
+        if (url == null) {
+            throw new RuntimeException("Could not load resources folder");
+        }
 
-        URL resource = classLoader.getResource("objectdescriptions/" + className + ".json");
+        File[] files = new File(url.getPath()).listFiles();
+        if (files == null) {
+            throw new RuntimeException("Could not load files inside the resources folder");
+        }
+
+        for (File file : files) {
+            if (file.getName().contains("objectdescriptions")) {
+                return file.getName();
+            }
+        }
+
+        throw new RuntimeException("Could not find folder with objectdescriptions");
+    }
+
+    private ObjectDescription loadObjectDescription(String className) {
+        String objectDescriptionFolder = getObjectDescriptionFolderPath();
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource = classLoader.getResource(objectDescriptionFolder + "/" + className + ".json");
+
         if (resource == null) {
             throw new ObjectDescriptionNotFoundException(className);
         } else {
