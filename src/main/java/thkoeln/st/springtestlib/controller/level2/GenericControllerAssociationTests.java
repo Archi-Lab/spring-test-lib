@@ -39,7 +39,7 @@ public class GenericControllerAssociationTests extends GenericTests {
     }
 
     /**
-     * Method: PUT
+     * Method: PUT /parents/{parentId}/child
      * Relationship: one to one
      * @param parentObjectDescription parent object description of the relationship
      * @param childObjectDescription child object description of the relationship
@@ -67,7 +67,7 @@ public class GenericControllerAssociationTests extends GenericTests {
     }
 
     /**
-     * Method: GET
+     * Method: GET /parents/{parentId}/child
      * Relationship: one to one
      * @param parentObjectDescription parent object description of the relationship
      * @param childObjectDescription child object description of the relationship
@@ -94,7 +94,7 @@ public class GenericControllerAssociationTests extends GenericTests {
     }
 
     /**
-     * Method: DELETE
+     * Method: DELETE /parents/{parentId}/child
      * Relationship: one to one
      * @param parentObjectDescription parent object description of the relationship
      * @param childObjectDescription child object description of the relationship
@@ -122,7 +122,34 @@ public class GenericControllerAssociationTests extends GenericTests {
     }
 
     /**
-     * Method: PUT
+     * Method: POST /parents/{parentId}/children
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
+    public void postOneToManyTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
+        // Save Parent
+        CrudRepository parentRepository = oir.getRepository(parentObjectDescription.getClassPath());
+        Object parentObject = objectBuilder.buildObject(parentObjectDescription);
+        parentRepository.save(parentObject);
+
+        // Create Child 1 & 2
+        List<Object> childObjects = new ArrayList<>();
+        childObjects.add(objectBuilder.buildObject(childObjectDescription));
+        childObjects.add(objectBuilder.buildObject(childObjectDescription));
+
+        ResultActions firstResultActions = postToObjects(parentObjectDescription.getRestPathLvl2(), parentObject, childObjects.get(0), childObjectDescription.getAttributePlural());
+        ResultActions secondResultActions = postToObjects(parentObjectDescription.getRestPathLvl2(), parentObject, childObjects.get(1), childObjectDescription.getAttributePlural());
+
+        objectValidator.assertToManyRelation(parentRepository, parentObject, childObjects, childObjectDescription.getGetToMany(), true);
+
+        objectValidator.validateResultActions(childObjects.get(0), firstResultActions, childObjectDescription.getAttributes(), childObjectDescription.getHiddenAttributes(), "");
+        objectValidator.validateResultActions(childObjects.get(1), secondResultActions, childObjectDescription.getAttributes(), childObjectDescription.getHiddenAttributes(), "");
+    }
+
+    /**
+     * Method: PUT /parents/{parentId}/children
      * Relationship: one to many
      * @param parentObjectDescription parent object description of the relationship
      * @param childObjectDescription child object description of the relationship
@@ -153,7 +180,31 @@ public class GenericControllerAssociationTests extends GenericTests {
     }
 
     /**
-     * Method: GET ALL
+     * Method: PUT /parents/{parentId}/children/{childId}
+     * Relationship: one to many
+     * @param parentObjectDescription parent object description of the relationship
+     * @param childObjectDescription child object description of the relationship
+     * @throws Exception
+     */
+    public void putOneToManySingleObjectTest(ObjectDescription parentObjectDescription, ObjectDescription childObjectDescription) throws Exception {
+        Object parentObject = objectBuilder.buildObject(parentObjectDescription);
+        List<Object> childObjects = objectBuilder.buildObjectList(childObjectDescription, COLLECTION_COUNT);
+        Object updatedChildObject = childObjects.get(0);
+        saveObjectWithRelation(parentObjectDescription.getClassPath(), childObjectDescription.getClassPath(), parentObject, childObjects, childObjectDescription.getSetToMany());
+
+        objectBuilder.setObjectFieldValues(updatedChildObject, childObjectDescription.getUpdatedAttributes());
+
+        ResultActions resultActions = mockMvc
+                .perform(put(BASE_PATH + parentObjectDescription.getRestPathLvl2() + "/" + oir.getId(parentObject) + "/" + childObjectDescription.getAttributePlural() + "/" + oir.getId(updatedChildObject))
+                        .content(objectMapper.writeValueAsString(updatedChildObject))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        objectValidator.validateResultActions(updatedChildObject, resultActions, childObjectDescription.getUpdatedAttributes(), childObjectDescription.getHiddenAttributes(), "");
+    }
+
+    /**
+     * Method: GET ALL /parents/{parentId}/children
      * Relationship: one to many
      * @param parentObjectDescription parent object description of the relationship
      * @param childObjectDescription child object description of the relationship
@@ -177,7 +228,7 @@ public class GenericControllerAssociationTests extends GenericTests {
     }
 
     /**
-     * Method: GET
+     * Method: GET /parents/{parentId}/children/{childId}
      * Relationship: one to many
      * @param parentObjectDescription parent object description of the relationship
      * @param childObjectDescription child object description of the relationship
@@ -201,7 +252,7 @@ public class GenericControllerAssociationTests extends GenericTests {
     }
 
     /**
-     * Method: DELETE
+     * Method: DELETE /parents/{parentId}/children/{childId}
      * Relationship: one to many
      * @param parentObjectDescription parent object description of the relationship
      * @param childObjectDescription child object description of the relationship
@@ -232,6 +283,14 @@ public class GenericControllerAssociationTests extends GenericTests {
                         .content(objectMapper.writeValueAsString(childObjects))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    private ResultActions postToObjects(String restPath, Object parentObject, Object childObject, String childAttributeName) throws Exception {
+        return mockMvc
+                .perform(post(BASE_PATH + restPath + "/" + oir.getId(parentObject) + "/" + childAttributeName)
+                        .content(objectMapper.writeValueAsString(childObject))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
     }
 
     private Object saveObjectWithRelation(String parentClassPath, String childClassPath, Object parentObject, List<Object> childObjects, String childSetterName) throws Exception {
