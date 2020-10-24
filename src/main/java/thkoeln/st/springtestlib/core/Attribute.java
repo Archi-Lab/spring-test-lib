@@ -33,6 +33,9 @@ public class Attribute {
             case "Integer":
                 value = Integer.parseInt(serializedValue);
                 break;
+            case "Long":
+                value = Long.parseLong(serializedValue);
+                break;
             case "Float":
                 value = Float.parseFloat(serializedValue);
                 break;
