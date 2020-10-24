@@ -48,11 +48,7 @@ public class GenericControllerTests extends GenericTests {
      * @throws Exception
      */
     public Object getTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
-        if (expectedObject == null) {
-            CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
-            expectedObject = objectBuilder.buildObject(objectDescription);
-            repository.save(expectedObject);
-        }
+        expectedObject = prepareObject(objectDescription, expectedObject);
 
         ResultActions resultActions = mockMvc
                 .perform(get(BASE_PATH + objectDescription.getRestPathLvl3() + "/" + oir.getId(expectedObject)).contentType(MediaType.APPLICATION_JSON))
@@ -134,11 +130,7 @@ public class GenericControllerTests extends GenericTests {
      * @throws Exception
      */
     public void putTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
-        if (expectedObject == null) {
-            CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
-            expectedObject = objectBuilder.buildObject(objectDescription);
-            repository.save(expectedObject);
-        }
+        expectedObject = prepareObject(objectDescription, expectedObject);
 
         objectBuilder.setObjectFieldValues(expectedObject, objectDescription.getUpdatedAttributes());
 
@@ -156,23 +148,57 @@ public class GenericControllerTests extends GenericTests {
     }
 
     /**
+     * Method: PATCH
+     * @param expectedObject pass an already existing object, pass null if a new one should be created
+     * @param objectDescription object description of the object which this action is performed on
+     * @param expectedLinks list of links which should be included in the response
+     * @param hiddenLinks list of links which should not be included in the response
+     * @throws Exception
+     */
+    public void patchTest(Object expectedObject, ObjectDescription objectDescription, Link[] expectedLinks, Link[] hiddenLinks) throws Exception {
+        expectedObject = prepareObject(objectDescription, expectedObject);
+
+        objectBuilder.setObjectFieldValues(expectedObject, objectDescription.getUpdatedAttributes());
+
+        ResultActions resultActions = mockMvc
+                .perform(
+                        patch(BASE_PATH + objectDescription.getRestPathLvl3() + "/" + oir.getId(expectedObject))
+                                .content(objectMapper.writeValueAsString(expectedObject))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        objectValidator.validateResultActionLinks(Collections.singletonList(expectedObject), resultActions, expectedLinks, hiddenLinks, "");
+
+        Object retrievedObject = oir.getRepository(objectDescription.getClassPath()).findAll().iterator().next();
+        objectValidator.validateTwoObjects(expectedObject, retrievedObject, objectDescription.getAttributes());
+    }
+
+    /**
      * Method: DELETE
+     * @param object pass an already existing object, pass null if a new one should be created
      * @param objectDescription object description of the object which this action is performed on
      * @throws Exception
      */
-    public void deleteTest(ObjectDescription objectDescription) throws Exception {
-        // Save Object
-        CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
-        Object object = objectBuilder.buildObject(objectDescription);
-        repository.save(object);
+    public void deleteTest(Object object, ObjectDescription objectDescription) throws Exception {
+        object = prepareObject(objectDescription, object);
 
         // Perform delete
         mockMvc
                 .perform(delete(BASE_PATH + objectDescription.getRestPathLvl3() + "/" + oir.getId(object)))
                 .andExpect(status().isNoContent());
 
-        Optional<Object> objectOp = repository.findById(oir.getId(object));
+        Optional<Object> objectOp = oir.getRepository(objectDescription.getClassPath()).findById(oir.getId(object));
         assertFalse(objectOp.isPresent());
+    }
+
+    private Object prepareObject(ObjectDescription objectDescription, Object alreadyExistingObject) throws Exception {
+        if (alreadyExistingObject == null) {
+            CrudRepository<Object, UUID> repository = oir.getRepository(objectDescription.getClassPath());
+            alreadyExistingObject = objectBuilder.buildObject(objectDescription);
+            repository.save(alreadyExistingObject);
+        }
+
+        return alreadyExistingObject;
     }
 
     private Attribute[] getAttributeDiff(Attribute[] attributes, Attribute[] hiddenAttributes) {
