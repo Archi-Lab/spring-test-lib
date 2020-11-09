@@ -29,12 +29,12 @@ public class APISpecificationTests {
         InputStream inputStream = this.getClass()
                 .getClassLoader()
                 .getResourceAsStream(path);
-        Map<String, List> obj = yaml.load(inputStream);
+        Map<String, Map> obj = yaml.load(inputStream);
 
         LinkedHashMap<String, APISpecificationEntry> apiSpecificationEntries = new LinkedHashMap<>();
-        for (Map.Entry<String, List> entry : obj.entrySet()) {
-            String uri = (String)((Map)entry.getValue().get(0)).get("URI");
-            String httpVerb = (String)((Map)entry.getValue().get(1)).get("HTTPVerb");
+        for (Map.Entry<String, Map> entry : obj.entrySet()) {
+            String uri = (String)(entry.getValue().get("URI"));
+            String httpVerb = (String)(entry.getValue().get("HTTPVerb"));
 
             APISpecificationEntry apiSpecificationEntry = new APISpecificationEntry(uri, httpVerb);
             apiSpecificationEntries.put(entry.getKey(), apiSpecificationEntry);
