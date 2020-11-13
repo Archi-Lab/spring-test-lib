@@ -57,14 +57,21 @@ public class GenericEvaluationTests {
         if (!foundEvaluationEntry.getPassed()) {
             StringBuilder sb = new StringBuilder();
             sb.append(foundEvaluationEntry.getExplanation());
-            sb.append(" - Points: ");
-            sb.append(foundEvaluationEntry.getPoints());
-            sb.append("/");
-            sb.append(foundEvaluationEntry.getMaxPoints());
-            sb.append(" - Attempt: ");
-            sb.append(foundEvaluationEntry.getAttempts());
-            sb.append("/");
-            sb.append(foundEvaluationEntry.getMaxAttempts());
+
+            if (foundEvaluationEntry.getPoints() != null && foundEvaluationEntry.getMaxPoints() != null) {
+                sb.append(" - Points: ");
+                sb.append(foundEvaluationEntry.getPoints());
+                sb.append("/");
+                sb.append(foundEvaluationEntry.getMaxPoints());
+            }
+
+            if (foundEvaluationEntry.getAttempts() != null && foundEvaluationEntry.getMaxAttempts() != null) {
+                sb.append(" - Attempt: ");
+                sb.append(foundEvaluationEntry.getAttempts());
+                sb.append("/");
+                sb.append(foundEvaluationEntry.getMaxAttempts());
+            }
+
             throw new Exception(sb.toString());
         }
     }
