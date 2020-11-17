@@ -28,10 +28,10 @@ public class GenericEvaluationTests {
         InputStream inputStream = this.getClass()
                 .getClassLoader()
                 .getResourceAsStream(EVALUATION_FILE_PATH);
-        Map<String, Map> obj = yaml.load(inputStream);
+        Map<Object, Map> obj = yaml.load(inputStream);
 
         LinkedHashMap<String, EvaluationEntry> evaluationEntries = new LinkedHashMap<>();
-        for (Map.Entry<String, Map> entry : obj.entrySet()) {
+        for (Map.Entry<Object, Map> entry : obj.entrySet()) {
             String explanation = (String)entry.getValue().get("explanation");
 
             Integer points = (Integer)(entry.getValue().get("points"));
@@ -42,7 +42,7 @@ public class GenericEvaluationTests {
             String correctedBy = (String)(entry.getValue().get("correctedBy"));
 
             EvaluationEntry evaluationEntry = new EvaluationEntry(explanation, points, maxPoints, attempts, maxAttempts, passed, correctedBy);
-            evaluationEntries.put(entry.getKey(), evaluationEntry);
+            evaluationEntries.put(entry.getKey().toString(), evaluationEntry);
         }
 
         return evaluationEntries;
