@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.controller.level2;
+package thkoeln.st.springtestlib.specification;
 
 import org.yaml.snakeyaml.Yaml;
 
