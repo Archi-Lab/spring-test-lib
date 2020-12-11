@@ -3,74 +3,110 @@ package thkoeln.st.springtestlib.specification.table;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Table {
+public abstract class Table {
 
-    private List<List<Cell>> cells = new ArrayList<>();
+    protected TableType tableType;
+
+    protected List<String> rows = new ArrayList<>();
+    protected List<String> columns = new ArrayList<>();
+    protected List<List<Cell>> cells = new ArrayList<>();
 
 
-    private void addRow() {
-        cells.add(new ArrayList<>());
+    public Table(TableType tableType) {
+        this.tableType = tableType;
     }
 
-    public Cell addCell(int row, Cell cell) {
-        while (cells.size() < (row + 1)) addRow();
+    public void addRow(String rowName) {
+        List<Cell> newRowArray = new ArrayList<>();
+        for (int i = 0; i < columns.size(); i++) {
+            newRowArray.add(null);
+        }
+        cells.add(newRowArray);
+        rows.add(rowName);
+    }
 
-        List<Cell> columns = cells.get(row);
-        columns.add(cell);
-        return cell;
+    public void addColumn(String columnName) {
+        for (List<Cell> row : cells) {
+            row.add(null);
+        }
+        columns.add(columnName);
+    }
+
+    protected int getRowIndex(String rowName) {
+        for (int i = 0; i < rows.size(); i++) {
+            if (rowName.equalsIgnoreCase(rows.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    protected int getColumnIndex(String columnName) {
+        for (int i = 0; i < columns.size(); i++) {
+            if (columnName.equalsIgnoreCase(columns.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void setCell(int row, int column, Cell cell) {
+        cells.get(row).set(column, cell);
     }
 
     public Cell getCell(int row, int column) {
-        if (row >= cells.size() || column >= cells.get(row).size()) {
+        if (row < 0 || column < 0 || row >= cells.size() || column >= cells.get(row).size()) {
             return null;
         }
 
         return cells.get(row).get(column);
     }
 
-    public void summarizeRows() {
-        if (cells.isEmpty()) {
-            return;
-        }
-
-        for (int i = 1; i < cells.size(); i++) {
-            for (int j = 0; j < cells.get(i).size(); j++) {
-                getCell(0, j).addContent(getCell(i, j));
-            }
-        }
-
-        for (int i = cells.size() - 1; i >= 1; i--) {
-            cells.remove(i);
-        }
+    public Cell getCell(int row, String columnName) {
+        int column = getColumnIndex(columnName);
+        return getCell(row, column);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Table)) {
-            return false;
-        }
-
-        Table otherTable = (Table)obj;
-
-        for (int row = 0; row < cells.size(); row++) {
-            for (int column = 0; column < cells.get(row).size(); column++) {
-                if (!getCell(row, column).isEmpty()
-                    && !getCell(row, column).equals(otherTable.getCell(row, column))) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    public Cell getCell(String rowName, String columnName) {
+        int row = getRowIndex(rowName);
+        int column = getColumnIndex(columnName);
+        return getCell(row, column);
     }
 
-    public static Table parseTable(List<String> fileLines) {
-        Table table = new Table();
-        for (int i = 2; i < fileLines.size(); i++) {
-            String[] columns = fileLines.get(i).trim().split("\\|");
-            for (int j = 1; j < columns.length; j++) {
-                table.addCell(i-2, Cell.parseCell(columns[j].trim()));
+    protected String[] parseElementsInContentLine(String contentLine) {
+        String[] elements = contentLine.trim().split("\\|");
+
+        String[] filteredElements = new String[elements.length-1];
+        for (int i = 1; i < elements.length; i++) {
+            filteredElements[i-1] = elements[i].trim();
+        }
+        return filteredElements;
+    }
+
+    public int getRowCount() {
+        return rows.size();
+    }
+
+    public int getColumnCount() {
+        return columns.size();
+    }
+
+    public TableType getTableType() {
+        return tableType;
+    }
+
+    public void parseTable(List<String> contentLines) {
+        String[] columnNames = parseElementsInContentLine(contentLines.get(0));
+        for (String columnName : columnNames) {
+            addColumn(columnName.trim());
+        }
+
+        for (int i = 2; i < contentLines.size(); i++) {
+            addRow(null);
+            String[] columns = parseElementsInContentLine(contentLines.get(i));
+            for (int j = 0; j < columns.length; j++) {
+                setCell(i-2, j, Cell.parseCell(columns[j]));
             }
         }
-        return table;
     }
 }
