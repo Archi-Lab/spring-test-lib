@@ -3,20 +3,20 @@ package thkoeln.st.springtestlib.specification.table;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnorderedColumnsTable extends Table {
+public class UnorderedOnlyColumnsTable extends Table {
 
 
-    public UnorderedColumnsTable(TableConfig tableConfig) {
-        super(TableType.UNORDERED_COLUMNS, tableConfig);
+    public UnorderedOnlyColumnsTable(TableConfig tableConfig) {
+        super(TableType.UNORDERED_ONLY_COLUMNS, tableConfig);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof UnorderedColumnsTable)) {
+        if (!(obj instanceof UnorderedOnlyColumnsTable)) {
             return false;
         }
 
-        UnorderedColumnsTable otherTable = (UnorderedColumnsTable)obj;
+        UnorderedOnlyColumnsTable otherTable = (UnorderedOnlyColumnsTable)obj;
         for (int c = 0; c < getColumnCount(); c++) {
             int otherTableColumnIndex = otherTable.getColumnIndex(columns.get(c));
             if (otherTableColumnIndex == -1) {

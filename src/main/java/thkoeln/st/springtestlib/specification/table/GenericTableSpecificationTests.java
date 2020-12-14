@@ -66,10 +66,12 @@ public class GenericTableSpecificationTests {
         switch (tableType) {
             case ROWS_AND_COLUMNS:
                 return new RowsAndColumnsTable(tableConfig);
-            case ORDERED_COLUMNS:
-                return new OrderedColumnsTable(tableConfig);
-            case UNORDERED_COLUMNS:
-                return new UnorderedColumnsTable(tableConfig);
+            case ORDERED_ONLY_COLUMNS:
+                return new OrderedOnlyColumnsTable(tableConfig);
+            case UNORDERED_ONLY_COLUMNS:
+                return new UnorderedOnlyColumnsTable(tableConfig);
+            case SEQUENCED_ONLY_COLUMNS:
+                return new SequencedOnlyColumnsTable(tableConfig);
             default:
                 throw new IllegalArgumentException("This table type does not exist");
         }

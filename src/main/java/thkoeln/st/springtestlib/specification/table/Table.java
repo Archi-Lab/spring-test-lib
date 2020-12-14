@@ -123,9 +123,10 @@ public abstract class Table {
 
     protected String[] parseElementsInContentLine(String contentLine) {
         String[] elements = contentLine.trim().split("\\|");
+        int columnMarks = (int)contentLine.chars().filter(ch -> ch == '|').count();
 
-        String[] filteredElements = new String[elements.length-1];
-        for (int i = 1; i < elements.length; i++) {
+        String[] filteredElements = new String[columnMarks - 1];
+        for (int i = 1; i < columnMarks; i++) {
             filteredElements[i-1] = elements[i].trim();
         }
         return filteredElements;
@@ -156,14 +157,14 @@ public abstract class Table {
             throw new InputMismatchException("A table consists of at least 3 lines");
         }
 
-        long expectedColumns = contentLines.get(0).chars().filter(ch -> ch == '|').count();
-        if (expectedColumns < 2) {
+        long expectedColumnMarks = contentLines.get(0).chars().filter(ch -> ch == '|').count();
+        if (expectedColumnMarks < 2) {
             throw new InputMismatchException("A table line needs at least two \"|\" chars");
         }
 
         for (String contentLine : contentLines) {
-            long columns = contentLine.chars().filter(ch -> ch == '|').count();
-            if (expectedColumns != columns) {
+            long columnMarks = contentLine.chars().filter(ch -> ch == '|').count();
+            if (expectedColumnMarks != columnMarks) {
                 throw new InputMismatchException("Each table line needs the same number of \"|\" chars");
             }
         }

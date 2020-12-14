@@ -1,19 +1,19 @@
 package thkoeln.st.springtestlib.specification.table;
 
-public class OrderedColumnsTable extends Table {
+public class OrderedOnlyColumnsTable extends Table {
 
 
-    public OrderedColumnsTable(TableConfig tableConfig) {
-        super(TableType.ORDERED_COLUMNS, tableConfig);
+    public OrderedOnlyColumnsTable(TableConfig tableConfig) {
+        super(TableType.ORDERED_ONLY_COLUMNS, tableConfig);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof OrderedColumnsTable)) {
+        if (!(obj instanceof OrderedOnlyColumnsTable)) {
             return false;
         }
 
-        OrderedColumnsTable otherTable = (OrderedColumnsTable)obj;
+        OrderedOnlyColumnsTable otherTable = (OrderedOnlyColumnsTable)obj;
         for (int r = 0; r < getRowCount(); r++) {
             for (int c = 0; c < getColumnCount(); c++) {
                 int otherTableColumnIndex = otherTable.getColumnIndex(columns.get(c));
