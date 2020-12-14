@@ -6,8 +6,8 @@ import java.util.List;
 public class UnorderedColumnsTable extends Table {
 
 
-    public UnorderedColumnsTable() {
-        super(TableType.UNORDERED_COLUMNS);
+    public UnorderedColumnsTable(TableConfig tableConfig) {
+        super(TableType.UNORDERED_COLUMNS, tableConfig);
     }
 
     @Override
@@ -25,14 +25,19 @@ public class UnorderedColumnsTable extends Table {
 
             List<Cell> nonEmptyCells = getAllNonEmptyCellsInColumn(c);
             List<Cell> otherTableNonEmptyCells = otherTable.getAllNonEmptyCellsInColumn(otherTableColumnIndex);
-
-            if (nonEmptyCells.size() != otherTableNonEmptyCells.size()) {
-                return false;
-            }
-
-            for (Cell nonEmptyCell : nonEmptyCells) {
-                if (!otherTableNonEmptyCells.contains(nonEmptyCell)) {
+            if (isDimensionExplanation(columns.get(c))) {
+                if (nonEmptyCells.size() < getRowCount() && otherTableNonEmptyCells.size() < otherTable.getRowCount()) {
                     return false;
+                }
+            } else {
+                if (nonEmptyCells.size() != otherTableNonEmptyCells.size()) {
+                    return false;
+                }
+
+                for (Cell nonEmptyCell : nonEmptyCells) {
+                    if (!otherTableNonEmptyCells.contains(nonEmptyCell)) {
+                        return false;
+                    }
                 }
             }
         }

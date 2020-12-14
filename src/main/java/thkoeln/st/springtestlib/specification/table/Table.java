@@ -1,6 +1,7 @@
 package thkoeln.st.springtestlib.specification.table;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 
 public abstract class Table {
@@ -11,12 +12,20 @@ public abstract class Table {
     protected List<String> columns = new ArrayList<>();
     protected List<List<Cell>> cells = new ArrayList<>();
 
+    protected TableConfig tableConfig;
 
-    public Table(TableType tableType) {
+
+    public Table(TableType tableType, TableConfig tableConfig) {
         this.tableType = tableType;
+
+        this.tableConfig = tableConfig;
     }
 
     public void addRow(String rowName) {
+        if (!isRowValid(rowName)) {
+            throw new InputMismatchException(rowName + " is not a valid row name");
+        }
+
         List<Cell> newRowArray = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
             newRowArray.add(null);
@@ -26,10 +35,49 @@ public abstract class Table {
     }
 
     public void addColumn(String columnName) {
+        if (!isColumnValid(columnName)) {
+            throw new InputMismatchException(columnName + " is not a valid column name");
+        }
+
         for (List<Cell> row : cells) {
             row.add(null);
         }
         columns.add(columnName);
+    }
+
+    public boolean isRowValid(String rowName) {
+        if (tableConfig.getValidRowValues().length == 0) {
+            return true;
+        }
+
+        for (String s : tableConfig.getValidRowValues()) {
+            if (s.equalsIgnoreCase(rowName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isColumnValid(String columnName) {
+        if (tableConfig.getValidColumnValues().length == 0) {
+            return true;
+        }
+
+        for (String s : tableConfig.getValidColumnValues()) {
+            if (s.equalsIgnoreCase(columnName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isDimensionExplanation(String dimensionName) {
+        for (String s : tableConfig.getExplanationDimensions()) {
+            if (s.equalsIgnoreCase(dimensionName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected int getRowIndex(String rowName) {
@@ -91,11 +139,49 @@ public abstract class Table {
         return columns.size();
     }
 
-    public TableType getTableType() {
-        return tableType;
+    protected List<String> filterContentLines(List<String> contentLines) {
+        List<String> filteredContentLines = new ArrayList<>();
+
+        for (String contentLine : contentLines) {
+            if (contentLine.contains("|")) {
+                filteredContentLines.add(contentLine);
+            }
+        }
+
+        return filteredContentLines;
     }
 
-    public void parseTable(List<String> contentLines) {
+    protected List<String> testSyntax(List<String> contentLines) {
+        if (contentLines.size() < 3) {
+            throw new InputMismatchException("A table consists of at least 3 lines");
+        }
+
+        long expectedColumns = contentLines.get(0).chars().filter(ch -> ch == '|').count();
+        if (expectedColumns < 2) {
+            throw new InputMismatchException("A table line needs at least two \"|\" chars");
+        }
+
+        for (String contentLine : contentLines) {
+            long columns = contentLine.chars().filter(ch -> ch == '|').count();
+            if (expectedColumns != columns) {
+                throw new InputMismatchException("Each table line needs the same number of \"|\" chars");
+            }
+        }
+
+        String[] split = parseElementsInContentLine(contentLines.get(1));
+        for (int i = 1; i < split.length; i++) {
+            long strokes = split[i].chars().filter(ch -> ch == '-').count();
+            if (strokes < 3) {
+                throw new InputMismatchException("Each column in the second line needs at least 3 \"-\" chars");
+            }
+        }
+
+        return contentLines;
+    }
+
+    public void parse(List<String> contentLines) {
+        contentLines = testSyntax(filterContentLines(contentLines));
+
         String[] columnNames = parseElementsInContentLine(contentLines.get(0));
         for (String columnName : columnNames) {
             addColumn(columnName.trim());
@@ -105,7 +191,7 @@ public abstract class Table {
             addRow(null);
             String[] columns = parseElementsInContentLine(contentLines.get(i));
             for (int j = 0; j < columns.length; j++) {
-                setCell(i-2, j, Cell.parseCell(columns[j]));
+                setCell(i-2, j, Cell.parseCell(columns[j], tableConfig.getValidCellValues()));
             }
         }
     }

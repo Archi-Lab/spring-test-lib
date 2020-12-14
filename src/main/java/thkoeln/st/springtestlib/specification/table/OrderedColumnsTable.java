@@ -3,8 +3,8 @@ package thkoeln.st.springtestlib.specification.table;
 public class OrderedColumnsTable extends Table {
 
 
-    public OrderedColumnsTable() {
-        super(TableType.ORDERED_COLUMNS);
+    public OrderedColumnsTable(TableConfig tableConfig) {
+        super(TableType.ORDERED_COLUMNS, tableConfig);
     }
 
     @Override
@@ -21,8 +21,14 @@ public class OrderedColumnsTable extends Table {
                     return false;
                 }
 
-                if (!getCell(r, c).equals(otherTable.getCell(r, otherTableColumnIndex))) {
-                    return false;
+                if (isDimensionExplanation(columns.get(c))) {
+                    if (getCell(r, c).isEmpty() && otherTable.getCell(r, otherTableColumnIndex).isEmpty()) {
+                        return false;
+                    }
+                } else {
+                    if (!getCell(r, c).equals(otherTable.getCell(r, otherTableColumnIndex))) {
+                        return false;
+                    }
                 }
             }
         }

@@ -4,8 +4,8 @@ import java.util.List;
 
 public class RowsAndColumnsTable extends Table {
 
-    public RowsAndColumnsTable() {
-        super(TableType.ROWS_AND_COLUMNS);
+    public RowsAndColumnsTable(TableConfig tableConfig) {
+        super(TableType.ROWS_AND_COLUMNS, tableConfig);
     }
 
     @Override
@@ -27,8 +27,14 @@ public class RowsAndColumnsTable extends Table {
                     return false;
                 }
 
-                if (getCell(r, c) != null && !getCell(r, c).equals(otherTable.getCell(otherTableRowIndex, otherTableColumnIndex))) {
-                    return false;
+                if (isDimensionExplanation(rows.get(r)) || isDimensionExplanation(columns.get(c))) {
+                    if (getCell(r, c).isEmpty() && otherTable.getCell(otherTableRowIndex, otherTableColumnIndex).isEmpty()) {
+                        return false;
+                    }
+                } else {
+                    if (getCell(r, c) != null && !getCell(r, c).equals(otherTable.getCell(otherTableRowIndex, otherTableColumnIndex))) {
+                        return false;
+                    }
                 }
             }
         }
@@ -37,7 +43,9 @@ public class RowsAndColumnsTable extends Table {
     }
 
     @Override
-    public void parseTable(List<String> contentLines) {
+    public void parse(List<String> contentLines) {
+        contentLines = testSyntax(filterContentLines(contentLines));
+
         String[] columnNames = parseElementsInContentLine(contentLines.get(0));
         for (int i = 1; i < columnNames.length; i++) {
             addColumn(columnNames[i].trim());
@@ -47,7 +55,7 @@ public class RowsAndColumnsTable extends Table {
             String[] columns = parseElementsInContentLine(contentLines.get(i));
             addRow(columns[0]);
             for (int j = 1; j < columns.length; j++) {
-                setCell(i-2, j-1, Cell.parseCell(columns[j]));
+                setCell(i-2, j-1, Cell.parseCell(columns[j], tableConfig.getValidCellValues()));
             }
         }
     }
