@@ -26,7 +26,7 @@ public class UnorderedColumnsTable extends Table {
             List<Cell> nonEmptyCells = getAllNonEmptyCellsInColumn(c);
             List<Cell> otherTableNonEmptyCells = otherTable.getAllNonEmptyCellsInColumn(otherTableColumnIndex);
             if (isDimensionExplanation(columns.get(c))) {
-                if (nonEmptyCells.size() < getRowCount() && otherTableNonEmptyCells.size() < otherTable.getRowCount()) {
+                if (nonEmptyCells.size() < getRowCount() || otherTableNonEmptyCells.size() < otherTable.getRowCount()) {
                     return false;
                 }
             } else {

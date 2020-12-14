@@ -28,7 +28,7 @@ public class RowsAndColumnsTable extends Table {
                 }
 
                 if (isDimensionExplanation(rows.get(r)) || isDimensionExplanation(columns.get(c))) {
-                    if (getCell(r, c).isEmpty() && otherTable.getCell(otherTableRowIndex, otherTableColumnIndex).isEmpty()) {
+                    if (getCell(r, c).isEmpty() || otherTable.getCell(otherTableRowIndex, otherTableColumnIndex).isEmpty()) {
                         return false;
                     }
                 } else {

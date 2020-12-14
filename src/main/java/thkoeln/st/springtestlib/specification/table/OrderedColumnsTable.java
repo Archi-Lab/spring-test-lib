@@ -22,7 +22,7 @@ public class OrderedColumnsTable extends Table {
                 }
 
                 if (isDimensionExplanation(columns.get(c))) {
-                    if (getCell(r, c).isEmpty() && otherTable.getCell(r, otherTableColumnIndex).isEmpty()) {
+                    if (getCell(r, c).isEmpty() || otherTable.getCell(r, otherTableColumnIndex).isEmpty()) {
                         return false;
                     }
                 } else {
