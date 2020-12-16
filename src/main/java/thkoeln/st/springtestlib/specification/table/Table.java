@@ -180,6 +180,10 @@ public abstract class Table {
         return contentLines;
     }
 
+    protected String[] getValidCellValues(int row, int column) {
+        return isDimensionExplanation(rows.get(row)) || isDimensionExplanation(columns.get(column)) ? new String[]{} : tableConfig.getValidCellValues();
+    }
+
     public void parse(List<String> contentLines) {
         contentLines = testSyntax(filterContentLines(contentLines));
 
@@ -192,7 +196,7 @@ public abstract class Table {
             addRow(null);
             String[] columns = parseElementsInContentLine(contentLines.get(i));
             for (int j = 0; j < columns.length; j++) {
-                setCell(i-2, j, Cell.parseCell(columns[j], tableConfig.getValidCellValues()));
+                setCell(i-2, j, Cell.parseCell(columns[j], getValidCellValues(i-2, j)));
             }
         }
     }

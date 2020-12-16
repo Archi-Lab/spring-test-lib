@@ -55,7 +55,7 @@ public class RowsAndColumnsTable extends Table {
             String[] columns = parseElementsInContentLine(contentLines.get(i));
             addRow(columns[0]);
             for (int j = 1; j < columns.length; j++) {
-                setCell(i-2, j-1, Cell.parseCell(columns[j], tableConfig.getValidCellValues()));
+                setCell(i-2, j-1, Cell.parseCell(columns[j], getValidCellValues(i-2, j-1)));
             }
         }
     }
