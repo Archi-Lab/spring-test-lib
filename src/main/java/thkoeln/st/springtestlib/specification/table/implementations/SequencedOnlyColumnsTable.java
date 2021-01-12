@@ -5,6 +5,9 @@ import thkoeln.st.springtestlib.specification.table.TableConfig;
 import thkoeln.st.springtestlib.specification.table.TableMismatchCause;
 import thkoeln.st.springtestlib.specification.table.TableType;
 
+import java.util.InputMismatchException;
+import java.util.List;
+
 
 public class SequencedOnlyColumnsTable extends Table {
 
@@ -20,7 +23,6 @@ public class SequencedOnlyColumnsTable extends Table {
         }
 
         SequencedOnlyColumnsTable otherTable = (SequencedOnlyColumnsTable)actualTable;
-        otherTable.findDuplicateEntries();
 
         for (int otherTableR = 0; otherTableR < otherTable.getRowCount(); otherTableR++) {
             boolean foundMatchingRow = false;
@@ -42,7 +44,7 @@ public class SequencedOnlyColumnsTable extends Table {
         for (int r = 0; r < getRowCount(); r++) {
             for (int i = 0; i < getRowCount(); i++) {
                 if (r != i && compareSequenceRows(r, i, this)) {
-                    tablesMismatch(Integer.toString(i+1), null, TableMismatchCause.DUPLICATE_ENTRIES);
+                    throw new InputMismatchException("Duplicate entries were found");
                 }
             }
         }
@@ -66,5 +68,12 @@ public class SequencedOnlyColumnsTable extends Table {
             }
         }
         return true;
+    }
+
+    @Override
+    public void parse(List<String> contentLines) {
+        super.parse(contentLines);
+
+        findDuplicateEntries();
     }
 }

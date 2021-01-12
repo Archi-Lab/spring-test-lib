@@ -26,6 +26,10 @@ public abstract class Table {
             throw new InputMismatchException("\"" + rowName + "\" is not a valid row name");
         }
 
+        if (isRowInUse(rowName)) {
+            throw new InputMismatchException("\"" + rowName + "\" is a row name which is already in use");
+        }
+
         List<Cell> newRowArray = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
             newRowArray.add(null);
@@ -42,6 +46,10 @@ public abstract class Table {
     public void addColumn(String columnName) {
         if (!isColumnValid(columnName)) {
             throw new InputMismatchException("\"" + columnName + "\" is not a valid column name");
+        }
+
+        if (isColumnInUse(columnName)) {
+            throw new InputMismatchException("\"" + columnName + "\" is a column name which is already in use");
         }
 
         for (List<Cell> row : cells) {
@@ -63,6 +71,15 @@ public abstract class Table {
         return false;
     }
 
+    public boolean isRowInUse(String rowName) {
+        for (String foundRow : rows) {
+            if (foundRow != null && foundRow.equalsIgnoreCase(rowName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isColumnValid(String columnName) {
         if (tableConfig.getValidColumnValues().length == 0) {
             return true;
@@ -70,6 +87,15 @@ public abstract class Table {
 
         for (String s : tableConfig.getValidColumnValues()) {
             if (s.equalsIgnoreCase(columnName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isColumnInUse(String columnName) {
+        for (String foundColumn : columns) {
+            if (foundColumn != null && foundColumn.equalsIgnoreCase(columnName)) {
                 return true;
             }
         }
@@ -201,8 +227,6 @@ public abstract class Table {
                 throw new InputMismatchException("Not enough rows.");
             case TOO_MANY_ROWS:
                 throw new InputMismatchException("Too many rows.");
-            case DUPLICATE_ENTRIES:
-                throw new InputMismatchException("Duplicate entries were found. " + getRowAndColumnDescriptor(row, column));
             case MISSING_EXPLANATION:
                 throw new InputMismatchException("Explanation is missing. " + getRowAndColumnDescriptor(row, column));
             case CELL_MISMATCH:
