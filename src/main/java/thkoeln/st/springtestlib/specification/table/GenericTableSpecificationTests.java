@@ -2,6 +2,10 @@ package thkoeln.st.springtestlib.specification.table;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import thkoeln.st.springtestlib.specification.table.implementations.UnorderedOnlyColumnsTable;
+import thkoeln.st.springtestlib.specification.table.implementations.OrderedOnlyColumnsTable;
+import thkoeln.st.springtestlib.specification.table.implementations.RowsAndColumnsTable;
+import thkoeln.st.springtestlib.specification.table.implementations.SequencedOnlyColumnsTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,9 +56,7 @@ public class GenericTableSpecificationTests {
         Table expectedTable = loadTable(expectedPath, tableType, tableConfig);
         Table actualTable = loadTable(actualPath, tableType, tableConfig);
 
-        if (!expectedTable.equals(actualTable)) {
-            throw new Exception("Actual table does not match the expected table");
-        }
+        expectedTable.compareToActualTable(actualTable);
     }
 
     public void testTableSyntax(String actualPath, String tableConfigPath, TableType tableType) throws Exception {

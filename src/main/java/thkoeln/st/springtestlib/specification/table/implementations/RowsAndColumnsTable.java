@@ -1,4 +1,6 @@
-package thkoeln.st.springtestlib.specification.table;
+package thkoeln.st.springtestlib.specification.table.implementations;
+
+import thkoeln.st.springtestlib.specification.table.*;
 
 import java.util.List;
 
@@ -8,38 +10,39 @@ public class RowsAndColumnsTable extends Table {
         super(TableType.ROWS_AND_COLUMNS, tableConfig);
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof RowsAndColumnsTable)) {
-            return false;
+    public void compareToActualTable(Table actualTable) {
+        if (!(actualTable instanceof RowsAndColumnsTable)) {
+            throw new IllegalArgumentException("Wrong table type passed as parameter");
         }
 
-        RowsAndColumnsTable otherTable = (RowsAndColumnsTable)obj;
+        RowsAndColumnsTable otherTable = (RowsAndColumnsTable)actualTable;
         for (int r = 0; r < getRowCount(); r++) {
             int otherTableRowIndex = otherTable.getRowIndex(rows.get(r));
             if (otherTableRowIndex == -1) {
-                return false;
+                tablesMismatch(TableMismatchCause.ROW_NOT_FOUND);
             }
 
             for (int c = 0; c < getColumnCount(); c++) {
                 int otherTableColumnIndex = otherTable.getColumnIndex(columns.get(c));
                 if (otherTableColumnIndex == -1) {
-                    return false;
+                    tablesMismatch(TableMismatchCause.COLUMN_NOT_FOUND);
                 }
 
                 if (isDimensionExplanation(rows.get(r)) || isDimensionExplanation(columns.get(c))) {
                     if (getCell(r, c).isEmpty() || otherTable.getCell(otherTableRowIndex, otherTableColumnIndex).isEmpty()) {
-                        return false;
+                        tablesMismatch(rows.get(r), columns.get(c), TableMismatchCause.MISSING_EXPLANATION);
                     }
                 } else {
                     if (getCell(r, c) != null && !getCell(r, c).equals(otherTable.getCell(otherTableRowIndex, otherTableColumnIndex))) {
-                        return false;
+                        tablesMismatch(rows.get(r), columns.get(c), TableMismatchCause.CELL_MISMATCH);
                     }
                 }
             }
         }
 
-        return true;
+        checkRowCountMatch(otherTable);
     }
 
     @Override

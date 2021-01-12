@@ -6,6 +6,9 @@ public class TableConfig {
     private String[] validColumnValues;
     private String[] validCellValues;
 
+    private boolean showRowHints;
+    private boolean showColumnHints;
+
 
     public String[] getExplanationDimensions() {
         return explanationDimensions;
@@ -37,5 +40,21 @@ public class TableConfig {
 
     public void setValidColumnValues(String[] validColumnValues) {
         this.validColumnValues = validColumnValues;
+    }
+
+    public boolean isShowRowHints() {
+        return showRowHints;
+    }
+
+    public void setShowRowHints(boolean showRowHints) {
+        this.showRowHints = showRowHints;
+    }
+
+    public boolean isShowColumnHints() {
+        return showColumnHints;
+    }
+
+    public void setShowColumnHints(boolean showColumnHints) {
+        this.showColumnHints = showColumnHints;
     }
 }

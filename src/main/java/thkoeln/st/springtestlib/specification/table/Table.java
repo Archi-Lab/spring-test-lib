@@ -23,7 +23,7 @@ public abstract class Table {
 
     public void addRow(String rowName) {
         if (!isRowValid(rowName)) {
-            throw new InputMismatchException(rowName + " is not a valid row name");
+            throw new InputMismatchException("\"" + rowName + "\" is not a valid row name");
         }
 
         List<Cell> newRowArray = new ArrayList<>();
@@ -34,9 +34,14 @@ public abstract class Table {
         rows.add(rowName);
     }
 
+    public void deleteRow(int index) {
+        cells.remove(index);
+        rows.remove(index);
+    }
+
     public void addColumn(String columnName) {
         if (!isColumnValid(columnName)) {
-            throw new InputMismatchException(columnName + " is not a valid column name");
+            throw new InputMismatchException("\"" + columnName + "\" is not a valid column name");
         }
 
         for (List<Cell> row : cells) {
@@ -182,6 +187,55 @@ public abstract class Table {
 
     protected String[] getValidCellValues(int row, int column) {
         return isDimensionExplanation(rows.get(row)) || isDimensionExplanation(columns.get(column)) ? new String[]{} : tableConfig.getValidCellValues();
+    }
+
+    public abstract void compareToActualTable(Table actualTable);
+
+    protected void tablesMismatch(String row, String column, TableMismatchCause tableMismatchCause) {
+        switch (tableMismatchCause) {
+            case ROW_NOT_FOUND:
+                throw new InputMismatchException("Expected row identifier not found.");
+            case COLUMN_NOT_FOUND:
+                throw new InputMismatchException("Expected column identifier not found.");
+            case NOT_ENOUGH_ROWS:
+                throw new InputMismatchException("Not enough rows.");
+            case TOO_MANY_ROWS:
+                throw new InputMismatchException("Too many rows.");
+            case DUPLICATE_ENTRIES:
+                throw new InputMismatchException("Duplicate entries were found. " + getRowAndColumnDescriptor(row, column));
+            case MISSING_EXPLANATION:
+                throw new InputMismatchException("Explanation is missing. " + getRowAndColumnDescriptor(row, column));
+            case CELL_MISMATCH:
+                throw new InputMismatchException("Cell content is not matching. " + getRowAndColumnDescriptor(row, column));
+        }
+    }
+
+    protected void tablesMismatch(TableMismatchCause tableMismatchCause) {
+        tablesMismatch(null, null, tableMismatchCause);
+    }
+
+    protected void checkRowCountMatch(Table actualTable) {
+        if (actualTable.getRowCount() < getRowCount()) {
+            tablesMismatch(TableMismatchCause.NOT_ENOUGH_ROWS);
+        } else if (actualTable.getRowCount() > getRowCount()) {
+            tablesMismatch(TableMismatchCause.TOO_MANY_ROWS);
+        }
+    }
+
+    private String getRowAndColumnDescriptor(String row, String column) {
+        String message = "";
+        if (tableConfig.isShowRowHints() && row != null) {
+            message += "Row: \"" + row + "\"";
+            if (tableConfig.isShowColumnHints() && column != null) {
+                message += ", ";
+            }
+        }
+
+        if (tableConfig.isShowColumnHints() && column != null) {
+            message += "Column: \"" + column + "\"";
+        }
+
+        return message;
     }
 
     public void parse(List<String> contentLines) {
