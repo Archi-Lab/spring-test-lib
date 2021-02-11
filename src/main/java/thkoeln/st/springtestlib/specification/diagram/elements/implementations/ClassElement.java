@@ -1,0 +1,15 @@
+package thkoeln.st.springtestlib.specification.diagram.elements.implementations;
+
+import thkoeln.st.springtestlib.specification.diagram.elements.ElementType;
+import thkoeln.st.springtestlib.specification.diagram.elements.RectangularElement;
+
+public class ClassElement extends RectangularElement {
+
+    public ClassElement() {
+        super(ElementType.CLASS);
+    }
+
+    public ClassElement(Integer xMin, Integer yMin, Integer width, Integer height) {
+        super(ElementType.CLASS, xMin, yMin, width, height);
+    }
+}
