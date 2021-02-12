@@ -3,9 +3,11 @@ package thkoeln.st.springtestlib.specification.diagram.parser.umlet.elements;
 import thkoeln.st.springtestlib.specification.diagram.elements.ElementType;
 import thkoeln.st.springtestlib.specification.diagram.parser.ElementParser;
 import thkoeln.st.springtestlib.specification.diagram.parser.umlet.parser.UmlClassParser;
+import thkoeln.st.springtestlib.specification.diagram.parser.umlet.parser.UmlRelationParser;
 
 public enum UmletElementTypes {
-    UML_CLASS("UMLClass", ElementType.CLASS, new UmlClassParser());
+    UML_CLASS("UMLClass", ElementType.CLASS, new UmlClassParser()),
+    UML_RELATION("Relation", ElementType.RELATION, new UmlRelationParser());
 
     private String elementName;
     private ElementType elementType;

@@ -1,5 +1,6 @@
 package thkoeln.st.springtestlib.specification.diagram.parser.umlet.parser;
 
+import thkoeln.st.springtestlib.specification.diagram.elements.Point;
 import thkoeln.st.springtestlib.specification.diagram.elements.implementations.ClassElement;
 import thkoeln.st.springtestlib.specification.diagram.parser.ElementParser;
 import thkoeln.st.springtestlib.specification.diagram.parser.umlet.elements.UmletElement;
@@ -9,10 +10,12 @@ public class UmlClassParser implements ElementParser<UmletElement> {
     @Override
     public ClassElement parseElement(UmletElement sourceElement) {
         ClassElement classElement = new ClassElement(
-                sourceElement.getUmletCoordinates().getX(),
-                sourceElement.getUmletCoordinates().getY(),
+                new Point(sourceElement.getUmletCoordinates().getX(),
+                sourceElement.getUmletCoordinates().getY()),
                 sourceElement.getUmletCoordinates().getWidth(),
                 sourceElement.getUmletCoordinates().getHeight());
+
+        // TODO
 
         return classElement;
     }

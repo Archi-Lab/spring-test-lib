@@ -6,31 +6,31 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class UmletCoordinates {
 
     @XStreamAlias("x")
-    private Integer x;
+    private int x;
 
     @XStreamAlias("y")
-    private Integer y;
+    private int y;
 
     @XStreamAlias("w")
-    private Integer width;
+    private int width;
 
     @XStreamAlias("h")
-    private Integer height;
+    private int height;
 
 
-    public Integer getX() {
+    public int getX() {
         return x;
     }
 
-    public Integer getY() {
+    public int getY() {
         return y;
     }
 
-    public Integer getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public Integer getHeight() {
+    public int getHeight() {
         return height;
     }
 }

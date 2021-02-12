@@ -16,6 +16,6 @@ public class GenericDiagramSpecificationTests {
 
     private Diagram loadDiagram(String path, DiagramType diagramType) throws IOException {
         UmletDiagramParser umletDiagramParser = new UmletDiagramParser();
-        return umletDiagramParser.parseDiagram(path, DiagramType.CLASS_DIAGRAM);
+        return umletDiagramParser.parseDiagram(path, diagramType);
     }
 }

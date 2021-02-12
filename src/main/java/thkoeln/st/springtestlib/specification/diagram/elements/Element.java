@@ -18,6 +18,10 @@ public abstract class Element {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public ElementType getElementType() {
         return elementType;
     }
