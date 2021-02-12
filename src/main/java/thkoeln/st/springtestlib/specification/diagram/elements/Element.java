@@ -15,6 +15,15 @@ public abstract class Element {
         id = UUID.randomUUID().toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Element)) {
+            return false;
+        }
+
+        return (id.equalsIgnoreCase(((Element)obj).getId()));
+    }
+
     public void init(List<Element> elements){ }
 
     public String getId() {

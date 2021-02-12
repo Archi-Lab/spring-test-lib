@@ -25,4 +25,10 @@ public abstract class Diagram {
             element.init(elements);
         }
     }
+
+    public <T> List<T> getElementsByType(ElementType elementType) {
+        return (List<T>)elementMap.get(elementType);
+    }
+
+    public abstract void compareToActualDiagram(Diagram actualDiagram);
 }

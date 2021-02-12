@@ -14,8 +14,7 @@ public class UmlClassParser implements ElementParser<UmletElement> {
                 sourceElement.getUmletCoordinates().getY()),
                 sourceElement.getUmletCoordinates().getWidth(),
                 sourceElement.getUmletCoordinates().getHeight());
-
-        // TODO
+        classElement.setId(sourceElement.getPanelAttributes());
 
         return classElement;
     }
