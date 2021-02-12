@@ -25,6 +25,7 @@ public class UmletDiagramParser extends DiagramParser {
             parseElement(diagram, umletElement);
         }
 
+        diagram.initElements();
         return diagram;
     }
 

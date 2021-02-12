@@ -1,5 +1,6 @@
 package thkoeln.st.springtestlib.specification.diagram.elements;
 
+import java.util.List;
 import java.util.UUID;
 
 public abstract class Element {
@@ -13,6 +14,8 @@ public abstract class Element {
 
         id = UUID.randomUUID().toString();
     }
+
+    public void init(List<Element> elements){ }
 
     public String getId() {
         return id;

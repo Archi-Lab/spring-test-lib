@@ -10,13 +10,19 @@ import java.util.Map;
 
 public abstract class Diagram {
 
-    protected Map<ElementType, List<Element>> elements = new HashMap<>();
+    protected Map<ElementType, List<Element>> elementMap = new HashMap<>();
+    protected List<Element> elements = new ArrayList<>();
 
 
     public void addElement(ElementType elementType, Element element) {
-        elements.putIfAbsent(elementType, new ArrayList<>());
-        elements.get(elementType).add(element);
+        elementMap.putIfAbsent(elementType, new ArrayList<>());
+        elementMap.get(elementType).add(element);
+        elements.add(element);
     }
 
-
+    public void initElements() {
+        for (Element element : elements) {
+            element.init(elements);
+        }
+    }
 }
