@@ -3,7 +3,7 @@ package thkoeln.st.springtestlib.specification.diagram;
 import org.junit.Test;
 import thkoeln.st.springtestlib.specification.diagram.implementations.DiagramType;
 
-public class UmletUmletDiagramParserTest {
+public class UmletDiagramParserTests {
 
     @Test
     public void testDiagramParsing() throws Exception {
