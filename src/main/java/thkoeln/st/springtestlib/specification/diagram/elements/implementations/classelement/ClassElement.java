@@ -1,4 +1,4 @@
-package thkoeln.st.springtestlib.specification.diagram.elements.implementations;
+package thkoeln.st.springtestlib.specification.diagram.elements.implementations.classelement;
 
 import thkoeln.st.springtestlib.specification.diagram.elements.ElementType;
 import thkoeln.st.springtestlib.specification.diagram.elements.Point;

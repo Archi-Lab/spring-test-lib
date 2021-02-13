@@ -1,7 +1,7 @@
 package thkoeln.st.springtestlib.specification.diagram.parser.umlet.parser;
 
 import thkoeln.st.springtestlib.specification.diagram.elements.Point;
-import thkoeln.st.springtestlib.specification.diagram.elements.implementations.ClassElement;
+import thkoeln.st.springtestlib.specification.diagram.elements.implementations.classelement.ClassElement;
 import thkoeln.st.springtestlib.specification.diagram.parser.ElementParser;
 import thkoeln.st.springtestlib.specification.diagram.parser.umlet.elements.UmletElement;
 

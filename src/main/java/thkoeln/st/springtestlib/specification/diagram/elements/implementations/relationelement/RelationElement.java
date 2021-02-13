@@ -1,15 +1,18 @@
-package thkoeln.st.springtestlib.specification.diagram.elements.implementations;
+package thkoeln.st.springtestlib.specification.diagram.elements.implementations.relationelement;
 
 import thkoeln.st.springtestlib.specification.diagram.elements.*;
 
+import java.util.InputMismatchException;
 import java.util.List;
 
 public class RelationElement extends LineElement {
 
     private static final float CONNECTION_ACCURACY = 5;
 
-    private RectangularElement referencedElement1;
-    private RectangularElement referencedElement2;
+    private RelationPointer relationPointer1 = new RelationPointer();
+    private RelationPointer relationPointer2 = new RelationPointer();
+
+    private RelationLineType relationLineType;
 
 
     public RelationElement() {
@@ -22,8 +25,18 @@ public class RelationElement extends LineElement {
 
     @Override
     public void init(List<Element> elements) {
-        referencedElement1 = getElementAtPos(elements, start);
-        referencedElement2 = getElementAtPos(elements, end);
+        relationPointer1.setConnectedElement(getElementAtPos(elements, start));
+        relationPointer2.setConnectedElement(getElementAtPos(elements, end));
+
+        if (relationPointer1.getConnectedElement() == null || relationPointer2.getConnectedElement() == null) {
+            throw new InputMismatchException("Could not connect relationelement");
+        }
+    }
+
+    private void switchDirection() {
+        RelationPointer tmp = relationPointer1;
+        relationPointer1 = relationPointer2;
+        relationPointer2 = tmp;
     }
 
     private RectangularElement getElementAtPos(List<Element> elements, Point pos) {
@@ -52,11 +65,40 @@ public class RelationElement extends LineElement {
                 && pos.getY() <= checkElement.getBottomRight().getY() - CONNECTION_ACCURACY;
     }
 
+    public boolean compareToRelationAndSwitchDirectionIfNeccessary(RelationElement relationElement) {
+        if (getReferencedElement1().equals(relationElement.getReferencedElement1())
+            && getReferencedElement2().equals(relationElement.getReferencedElement2())) {
+            return true;
+        }
+        if (getReferencedElement1().equals(relationElement.getReferencedElement2())
+            && getReferencedElement2().equals(relationElement.getReferencedElement1())) {
+            relationElement.switchDirection();
+            return true;
+        }
+        return false;
+    }
+
+    public RelationPointer getRelationPointer1() {
+        return relationPointer1;
+    }
+
+    public RelationPointer getRelationPointer2() {
+        return relationPointer2;
+    }
+
     public RectangularElement getReferencedElement1() {
-        return referencedElement1;
+        return relationPointer1.getConnectedElement();
     }
 
     public RectangularElement getReferencedElement2() {
-        return referencedElement2;
+        return relationPointer2.getConnectedElement();
+    }
+
+    public RelationLineType getRelationLineType() {
+        return relationLineType;
+    }
+
+    public void setRelationLineType(RelationLineType relationLineType) {
+        this.relationLineType = relationLineType;
     }
 }
