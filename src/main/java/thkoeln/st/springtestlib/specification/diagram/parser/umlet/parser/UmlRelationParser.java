@@ -4,11 +4,10 @@ import thkoeln.st.springtestlib.specification.diagram.elements.Point;
 import thkoeln.st.springtestlib.specification.diagram.elements.implementations.relationelement.RelationArrowType;
 import thkoeln.st.springtestlib.specification.diagram.elements.implementations.relationelement.RelationElement;
 import thkoeln.st.springtestlib.specification.diagram.elements.implementations.relationelement.RelationLineType;
-import thkoeln.st.springtestlib.specification.diagram.parser.ElementParser;
 import thkoeln.st.springtestlib.specification.diagram.parser.umlet.elements.UmletElement;
 
 
-public class UmlRelationParser implements ElementParser<UmletElement> {
+public class UmlRelationParser extends UmletParser {
 
     @Override
     public RelationElement parseElement(UmletElement sourceElement) {
@@ -66,6 +65,8 @@ public class UmlRelationParser implements ElementParser<UmletElement> {
         int numberOfArrows = countOccurrences(content, arrowDescriptor);
 
         switch (numberOfArrows) {
+            case 5:
+                return RelationArrowType.DIAMOND_FULL;
             case 4:
                 return RelationArrowType.DIAMONG_HOLLOW;
             case 3:
@@ -84,15 +85,14 @@ public class UmlRelationParser implements ElementParser<UmletElement> {
             if (property.startsWith(cardinalityPrefix)) {
                 String[] split = property.split("=");
                 if (split.length >= 2) {
-                    return split[1].trim();
+                    String cardinality = split[1].trim();
+                    cardinality = cardinality.replace('*', 'n');
+                    cardinality = cardinality.replace("0..n", "n");
+                    return cardinality;
                 }
             }
         }
         return "";
-    }
-
-    private String[] getSplittedProperties(UmletElement sourceElement) {
-        return sourceElement.getPanelAttributes().split("\n");
     }
 
     private int countOccurrences(String content, String find) {
