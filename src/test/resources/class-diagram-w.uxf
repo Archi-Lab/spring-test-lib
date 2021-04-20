@@ -24,8 +24,7 @@
     <panel_attributes>Birne
 --
 color
-
-age</panel_attributes>
+alter</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -39,7 +38,7 @@ age</panel_attributes>
     <panel_attributes>Apfel
 --
 color:   string
-age:integer
+age:float
 
 </panel_attributes>
     <additional_attributes/>
@@ -52,7 +51,7 @@ age:integer
       <w>280</w>
       <h>140</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-&gt;&gt;</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;-&gt;</panel_attributes>
     <additional_attributes>10.0;120.0;260.0;10.0</additional_attributes>
   </element>
   <element>
@@ -64,9 +63,32 @@ age:integer
       <h>170</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-m1=0..n
+m1=1..n
 m2=0..1
 </panel_attributes>
     <additional_attributes>10.0;10.0;100.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>290</x>
+      <y>490</y>
+      <w>200</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Garten</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
+      <y>380</y>
+      <w>280</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.&gt;
+</panel_attributes>
+    <additional_attributes>10.0;110.0;260.0;10.0</additional_attributes>
   </element>
 </diagram>
