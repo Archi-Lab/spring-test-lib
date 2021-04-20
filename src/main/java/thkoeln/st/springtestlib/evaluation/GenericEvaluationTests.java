@@ -1,10 +1,9 @@
 package thkoeln.st.springtestlib.evaluation;
 
-import org.yaml.snakeyaml.TypeDescription;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-
-import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,9 @@ import java.util.Map;
  */
 public class GenericEvaluationTests {
 
-    private static final String EVALUATION_FILE_PATH = "evaluation.yaml";
+    private static final String EVALUATION_FILE_PATH = "evaluation.md";
+    private static final String EVALUATION_PASSED_SYMBOL = "*";
+    private static final String EVALUATION_EXERCISE_SYMBOL = "#";
 
 
     private Map<String, EvaluationEntry> evaluationEntries;
@@ -24,28 +25,72 @@ public class GenericEvaluationTests {
     }
 
     private Map<String, EvaluationEntry> loadEvaluations() {
-        Yaml yaml = new Yaml();
-        InputStream inputStream = this.getClass()
-                .getClassLoader()
-                .getResourceAsStream(EVALUATION_FILE_PATH);
-        Map<Object, Map> obj = yaml.load(inputStream);
+        String totalEvaluationContent;
+        try {
+            totalEvaluationContent = getEvaluationFileContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new LinkedHashMap<>();
+        }
+        String[] totalSplitEvaluationContent = totalEvaluationContent.split("\n");
 
-        LinkedHashMap<String, EvaluationEntry> evaluationEntries = new LinkedHashMap<>();
-        for (Map.Entry<Object, Map> entry : obj.entrySet()) {
-            String explanation = (String)entry.getValue().get("explanation");
+        Map<String, EvaluationEntry> evaluationEntries = new LinkedHashMap<>();
+        List<String> evaluationContent = new ArrayList<>();
+        boolean foundAtLeastOneEntry = false;
 
-            Integer points = (Integer)(entry.getValue().get("points"));
-            Integer maxPoints = (Integer)(entry.getValue().get("maxPoints"));
-            Integer attempts = (Integer)(entry.getValue().get("attempts"));
-            Integer maxAttempts = (Integer)(entry.getValue().get("maxAttempts"));
-            Boolean passed = (Boolean)(entry.getValue().get("passed"));
-            String correctedBy = (String)(entry.getValue().get("correctedBy"));
+        for (String contentLine : totalSplitEvaluationContent) {
+            if (contentLine.contains(EVALUATION_EXERCISE_SYMBOL)) {
+                if (foundAtLeastOneEntry) {
+                    addEvaluationEntry(evaluationEntries, evaluationContent);
+                    evaluationContent = new ArrayList<>();
+                }
+                foundAtLeastOneEntry = true;
+            }
+            if (foundAtLeastOneEntry) {
+                evaluationContent.add(contentLine);
+            }
+        }
 
-            EvaluationEntry evaluationEntry = new EvaluationEntry(explanation, points, maxPoints, attempts, maxAttempts, passed, correctedBy);
-            evaluationEntries.put(entry.getKey().toString(), evaluationEntry);
+        if (foundAtLeastOneEntry) {
+            addEvaluationEntry(evaluationEntries, evaluationContent);
         }
 
         return evaluationEntries;
+    }
+
+    private void addEvaluationEntry(Map<String, EvaluationEntry> evaluationEntries, List<String> evaluationLines) {
+        ensureOneEmptyLineAtTheEnd(evaluationLines);
+
+        String evaluationKey = evaluationLines.get(0);
+        boolean passed = evaluationKey.contains(EVALUATION_PASSED_SYMBOL);
+        evaluationKey = evaluationKey.replace(EVALUATION_PASSED_SYMBOL, "").replace(EVALUATION_EXERCISE_SYMBOL, "").trim();
+
+        String explanation = "";
+        for (int i = 1; i < evaluationLines.size(); i++) {
+            explanation += evaluationLines.get(i);
+
+            if (i < evaluationLines.size() - 1) {
+                explanation += "\n";
+            }
+        }
+
+        EvaluationEntry evaluationEntry = new EvaluationEntry(explanation, passed);
+        evaluationEntries.put(evaluationKey, evaluationEntry);
+    }
+
+    private void ensureOneEmptyLineAtTheEnd(List<String> evaluationLines) {
+        for (int i = evaluationLines.size() - 1; i >= 0; i--) {
+            if (evaluationLines.get(i).trim().length() > 0) {
+                break;
+            }
+            evaluationLines.remove(i);
+        }
+        evaluationLines.add("");
+    }
+
+    private String getEvaluationFileContent() throws IOException {
+        File file = new File(getClass().getClassLoader().getResource(EVALUATION_FILE_PATH).getFile());
+        return new String(Files.readAllBytes(file.toPath()));
     }
 
     public void evaluateExercise(String exerciseKey) throws Exception {
@@ -55,24 +100,7 @@ public class GenericEvaluationTests {
         }
 
         if (!foundEvaluationEntry.getPassed()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(foundEvaluationEntry.getExplanation());
-
-            if (foundEvaluationEntry.getPoints() != null && foundEvaluationEntry.getMaxPoints() != null) {
-                sb.append(" - Points: ");
-                sb.append(foundEvaluationEntry.getPoints());
-                sb.append("/");
-                sb.append(foundEvaluationEntry.getMaxPoints());
-            }
-
-            if (foundEvaluationEntry.getAttempts() != null && foundEvaluationEntry.getMaxAttempts() != null) {
-                sb.append(" - Attempt: ");
-                sb.append(foundEvaluationEntry.getAttempts());
-                sb.append("/");
-                sb.append(foundEvaluationEntry.getMaxAttempts());
-            }
-
-            throw new Exception(sb.toString());
+            throw new Exception(foundEvaluationEntry.getExplanation());
         }
     }
 }
